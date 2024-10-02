@@ -1,6 +1,5 @@
 package com.freddy.craftyconcoctions.block;
 
-import com.freddy.craftyconcoctions.CraftyConcoctions;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.DataComponentTypes;
@@ -40,12 +39,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
         boolean holdingGlassBottle = heldStack.getItem() == Items.POTION || heldStack.getItem() == Items.GLASS_BOTTLE;
         boolean glassBottleHasWater = false;
         if (holdingGlassBottle && heldStack.contains(DataComponentTypes.POTION_CONTENTS))
-        {
             glassBottleHasWater = heldStack.get(DataComponentTypes.POTION_CONTENTS).matches(Potions.WATER);
-            CraftyConcoctions.LOGGER.info("heldStack" + heldStack.get(DataComponentTypes.POTION_CONTENTS));
-        }
-
-        CraftyConcoctions.LOGGER.info("holdingWaterBucket: " + holdingWaterBucket + ", glassBottleHasWater: " + glassBottleHasWater);
 
         switch (mode)
         {
@@ -95,8 +89,6 @@ public class WitchCauldronBlockEntity extends BlockEntity
                     }
                 }
         }
-
-        CraftyConcoctions.LOGGER.info("mode: " + mode + ", waterAmount: " + waterAmount);
 
         return interactionOccurred;
     }

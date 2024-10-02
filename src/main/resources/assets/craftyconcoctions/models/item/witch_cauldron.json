@@ -1,3 +1,6 @@
 {
-  "parent": "craftyconcoctions:block/witch_cauldron"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/cauldron"
+  }
 }
