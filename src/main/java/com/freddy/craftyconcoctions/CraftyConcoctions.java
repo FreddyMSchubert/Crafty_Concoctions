@@ -2,6 +2,7 @@ package com.freddy.craftyconcoctions;
 
 import com.freddy.craftyconcoctions.block.ModBlockEntities;
 import com.freddy.craftyconcoctions.block.ModBlocks;
+import com.freddy.craftyconcoctions.effect.ModEffects;
 import com.freddy.craftyconcoctions.item.ModItemGroups;
 import com.freddy.craftyconcoctions.item.ModItems;
 import com.freddy.craftyconcoctions.networking.ModMessages;
@@ -25,5 +26,6 @@ public class CraftyConcoctions implements ModInitializer
 		ModItemGroups.register();
 		ModBlockEntities.register();
 		ModMessages.registerS2C();
+		ModEffects.register();
 	}
 }
