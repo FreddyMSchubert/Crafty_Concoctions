@@ -1,5 +1,9 @@
 {
   "itemgroup.crafty_concoctions_group": "Crafty Concoctions",
 
-  "block.craftyconcoctions.witch_cauldron": "Witch Cauldron"
+  "block.craftyconcoctions.witch_cauldron": "Witch Cauldron",
+
+  "tag.item.craftyconcoctions.ingredients": "Ingredients",
+  "tag.item.craftyconcoctions.modifiers": "Modifiers",
+  "tag.item.craftyconcoctions.potion_definers": "Potion Definers"
 }

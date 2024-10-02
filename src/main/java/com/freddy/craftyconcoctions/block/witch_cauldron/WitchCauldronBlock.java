@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class WitchCauldronBlock extends BlockWithEntity
 {
 
-    private static final VoxelShape SHAPE = VoxelShapes.combineAndSimplify(VoxelShapes.fullCube(), VoxelShapes.union(createCuboidShape(0.0, 0.0, 4.0, 16.0, 3.0, 12.0), new VoxelShape[]{createCuboidShape(4.0, 0.0, 0.0, 12.0, 3.0, 16.0), createCuboidShape(2.0, 0.0, 2.0, 14.0, 3.0, 14.0), createCuboidShape(2.0, 4.0, 2.0, 14.0, 16.0, 14.0)}), BooleanBiFunction.ONLY_FIRST);
+    private static final VoxelShape SHAPE = VoxelShapes.combineAndSimplify(VoxelShapes.fullCube(), VoxelShapes.union(createCuboidShape(0.0, 0.0, 4.0, 16.0, 3.0, 12.0), createCuboidShape(4.0, 0.0, 0.0, 12.0, 3.0, 16.0), createCuboidShape(2.0, 0.0, 2.0, 14.0, 3.0, 14.0), createCuboidShape(2.0, 4.0, 2.0, 14.0, 16.0, 14.0)), BooleanBiFunction.ONLY_FIRST);
 
     public static final MapCodec<WitchCauldronBlock> CODEC = WitchCauldronBlock.createCodec(WitchCauldronBlock::new);
 
@@ -94,5 +94,17 @@ public class WitchCauldronBlock extends BlockWithEntity
                 return ActionResult.CONSUME;
         }
         return super.onUse(state, world, pos, player, hit);
+    }
+
+    @Override
+    protected void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved)
+    {
+        if (state.getBlock() != newState.getBlock())
+        {
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof WitchCauldronBlockEntity witchCauldronBlockEntity)
+                witchCauldronBlockEntity.scatterIngredients(pos, world);
+        }
+        super.onStateReplaced(state, world, pos, newState, moved);
     }
 }

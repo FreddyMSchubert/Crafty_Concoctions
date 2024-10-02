@@ -1,11 +1,11 @@
 package com.freddy.craftyconcoctions.block.witch_cauldron;
 
-import com.freddy.craftyconcoctions.CraftyConcoctions;
 import com.freddy.craftyconcoctions.block.ModBlockEntities;
 import com.freddy.craftyconcoctions.item.ModItemTags;
 import com.freddy.craftyconcoctions.networking.payload.S2CWitchCauldronSyncPayload;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.PotionContentsComponent;
@@ -22,8 +22,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -116,7 +118,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
         {
             case 0:
             case 1:
-                if (waterAmount > 0)
+                if (waterAmount > 0 && ticksSinceModeSwitch % 5 == 0)
                     attemptToPickUpIngredient();
                 break;
         }
@@ -131,10 +133,13 @@ public class WitchCauldronBlockEntity extends BlockEntity
 
         boolean holdingWaterBucket = heldStack.getItem() == Items.WATER_BUCKET;
         boolean holdingBucket = heldStack.getItem() == Items.BUCKET;
-        boolean holdingGlassBottle = heldStack.getItem() == Items.POTION || heldStack.getItem() == Items.GLASS_BOTTLE;
+        boolean holdingGlassBottle = heldStack.getItem() == Items.POTION || heldStack.getItem() == Items.GLASS_BOTTLE
+                || heldStack.getItem() == Items.LINGERING_POTION || heldStack.getItem() == Items.SPLASH_POTION;
         boolean glassBottleHasWater = false;
         if (holdingGlassBottle && heldStack.contains(DataComponentTypes.POTION_CONTENTS))
             glassBottleHasWater = heldStack.get(DataComponentTypes.POTION_CONTENTS).matches(Potions.WATER);
+
+        GameMode gameMode = ((ServerPlayerEntity)player).interactionManager.getGameMode();
 
         switch (mode)
         {
@@ -146,17 +151,23 @@ public class WitchCauldronBlockEntity extends BlockEntity
                     {
                         waterAmount = 3; markDirty();
                         interactionOccurred = true;
-                        heldStack.decrement(1);
-                        player.setStackInHand(Hand.MAIN_HAND, heldStack);
-                        player.giveItemStack(Items.BUCKET.getDefaultStack());
+                        if (gameMode != GameMode.CREATIVE)
+                        {
+                            heldStack.decrement(1);
+                            player.setStackInHand(Hand.MAIN_HAND, heldStack);
+                            player.giveItemStack(Items.BUCKET.getDefaultStack());
+                        }
                     }
                     else if (holdingGlassBottle && glassBottleHasWater)
                     {
                         waterAmount = waterAmount + 1; markDirty();
                         interactionOccurred = true;
-                        heldStack.decrement(1);
-                        player.setStackInHand(Hand.MAIN_HAND, heldStack);
-                        player.giveItemStack(Items.GLASS_BOTTLE.getDefaultStack());
+                        if (gameMode != GameMode.CREATIVE)
+                        {
+                            heldStack.decrement(1);
+                            player.setStackInHand(Hand.MAIN_HAND, heldStack);
+                            player.giveItemStack(Items.GLASS_BOTTLE.getDefaultStack());
+                        }
                     }
                 }
 
@@ -166,7 +177,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
                     if (holdingBucket)
                     {
                         interactionOccurred = true;
-                        if (waterAmount == 3)
+                        if (waterAmount == 3 && gameMode != GameMode.CREATIVE)
                         {
                             heldStack.decrement(1);
                             player.setStackInHand(Hand.MAIN_HAND, heldStack);
@@ -178,9 +189,12 @@ public class WitchCauldronBlockEntity extends BlockEntity
                     {
                         waterAmount = waterAmount - 1; markDirty();
                         interactionOccurred = true;
-                        heldStack.decrement(1);
-                        player.setStackInHand(Hand.MAIN_HAND, heldStack);
-                        player.giveItemStack(PotionContentsComponent.createStack(Items.POTION, Potions.WATER));
+                        if (gameMode != GameMode.CREATIVE)
+                        {
+                            heldStack.decrement(1);
+                            player.setStackInHand(Hand.MAIN_HAND, heldStack);
+                            player.giveItemStack(PotionContentsComponent.createStack(Items.POTION, Potions.WATER));
+                        }
                     }
                 }
         }
@@ -190,11 +204,11 @@ public class WitchCauldronBlockEntity extends BlockEntity
 
     private void attemptToPickUpIngredient()
     {
-        CraftyConcoctions.LOGGER.info("Attempting to pick up ingredient");
         Box areaToCheck = new Box(pos.getX(), pos.getY() + 0.2f, pos.getZ(), pos.getX() + 1, pos.getY() + 0.3f, pos.getZ() + 1);
         List<ItemEntity> items = world.getEntitiesByClass(ItemEntity.class, areaToCheck, itemEntity -> itemEntity.getStack().isIn(ModItemTags.INGREDIENTS));
 
-        CraftyConcoctions.LOGGER.info("Found " + items.size() + " items");
+        if (!items.isEmpty() && mode != 1)
+            switchModeTo(1);
 
         for (ItemEntity itemEntity : items)
         {
@@ -205,8 +219,14 @@ public class WitchCauldronBlockEntity extends BlockEntity
             itemStack.decrement(1);
             markDirty();
         }
+    }
 
-        if (mode != 1)
-            switchModeTo(1);
+    public void scatterIngredients(BlockPos pos, World world)
+    {
+        if (mode == 1 || mode == 2)
+            for (Item ingredient : ingredients)
+                ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), ingredient.getDefaultStack());
+        if (waterAmount == 3)
+            world.setBlockState(pos, Blocks.WATER.getDefaultState());
     }
 }
