@@ -15,7 +15,7 @@ public class ModMessagesClient
                 BlockPos pos = packet.pos();
                 BlockEntity blockEntity = context.client().world.getBlockEntity(pos);
                 if (blockEntity instanceof WitchCauldronBlockEntity cauldronBlockEntity)
-                    cauldronBlockEntity.setData(packet.mode(), packet.waterAmount());
+                    cauldronBlockEntity.setData(packet.mode(), packet.waterAmount(), packet.ticksSinceModeSwitch());
             });
         });
     }

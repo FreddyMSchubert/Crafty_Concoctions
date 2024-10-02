@@ -48,14 +48,15 @@ public class WitchCauldronBlockEntity extends BlockEntity
         if (world == null || world.isClient)
             return;
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, getPos()))
-            ServerPlayNetworking.send(player, new S2CWitchCauldronSyncPayload(getPos(), mode, waterAmount));
+            ServerPlayNetworking.send(player, new S2CWitchCauldronSyncPayload(getPos(), mode, waterAmount, ticksSinceModeSwitch));
         super.markDirty();
     }
     // used by client to update data from server
-    public void setData(int mode, int waterAmount)
+    public void setData(int mode, int waterAmount, int ticksSinceModeSwitch)
     {
         this.mode = mode;
         this.waterAmount = waterAmount;
+        this.ticksSinceModeSwitch = ticksSinceModeSwitch;
     }
 
     @Override
