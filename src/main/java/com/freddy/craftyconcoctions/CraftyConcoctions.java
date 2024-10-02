@@ -1,6 +1,7 @@
 package com.freddy.craftyconcoctions;
 
 import com.freddy.craftyconcoctions.block.ModBlocks;
+import com.freddy.craftyconcoctions.item.ModItemGroups;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -17,5 +18,6 @@ public class CraftyConcoctions implements ModInitializer
 		LOGGER.info("Hello World! It's time to get crafty with some concoctions!");
 
 		ModBlocks.register();
+		ModItemGroups.register();
 	}
 }
