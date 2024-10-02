@@ -33,10 +33,10 @@ public class WitchCauldronBlockEntityRenderer implements BlockEntityRenderer<Wit
         Matrix4f matrixPos = matrices.peek().getPositionMatrix();
         MatrixStack.Entry entry = matrices.peek();
 
-        vertexConsumer.vertex(matrixPos, -0.5f, 0.5f, 0.0f).color(255, 255, 255, 255).texture(0.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
-        vertexConsumer.vertex(matrixPos, 0.5f, 0.5f, 0.0f).color(255, 255, 255, 255).texture(1.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
-        vertexConsumer.vertex(matrixPos, 0.5f, -0.5f, 0.0f).color(255, 255, 255, 255).texture(1.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
-        vertexConsumer.vertex(matrixPos, -0.5f, -0.5f, 0.0f).color(255, 255, 255, 255).texture(0.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        vertexConsumer.vertex(matrixPos, -0.5f, 0.5f, 0.0f).color(WitchCauldronSettings.WATER_COLOR.RED, WitchCauldronSettings.WATER_COLOR.GREEN, WitchCauldronSettings.WATER_COLOR.BLUE, WitchCauldronSettings.WATER_COLOR.ALPHA).texture(0.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        vertexConsumer.vertex(matrixPos, 0.5f, 0.5f, 0.0f).color(WitchCauldronSettings.WATER_COLOR.RED, WitchCauldronSettings.WATER_COLOR.GREEN, WitchCauldronSettings.WATER_COLOR.BLUE, WitchCauldronSettings.WATER_COLOR.ALPHA).texture(1.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        vertexConsumer.vertex(matrixPos, 0.5f, -0.5f, 0.0f).color(WitchCauldronSettings.WATER_COLOR.RED, WitchCauldronSettings.WATER_COLOR.GREEN, WitchCauldronSettings.WATER_COLOR.BLUE, WitchCauldronSettings.WATER_COLOR.ALPHA).texture(1.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        vertexConsumer.vertex(matrixPos, -0.5f, -0.5f, 0.0f).color(WitchCauldronSettings.WATER_COLOR.RED, WitchCauldronSettings.WATER_COLOR.GREEN, WitchCauldronSettings.WATER_COLOR.BLUE, WitchCauldronSettings.WATER_COLOR.ALPHA).texture(0.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
 
         matrices.pop();
     }
