@@ -1,5 +1,8 @@
 package com.freddy.craftyconcoctions.block;
 
+import com.freddy.craftyconcoctions.networking.payload.S2CWitchCauldronSyncPayload;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.DataComponentTypes;
@@ -7,7 +10,11 @@ import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.potion.Potions;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,6 +28,45 @@ public class WitchCauldronBlockEntity extends BlockEntity
 
     public int mode = 0; // 0 = inputting water, 1 = inputting ingredients, 2 = brewing, 3 = outputting potion
     public int waterAmount = 0; // bucket = +3, bottle = +1; max = 3
+
+    /* ------ DATA STORAGE & SYNC ------ */
+
+    @Override
+    public void markDirty()
+    {
+        if (world == null || world.isClient)
+            return;
+        for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, getPos()))
+            ServerPlayNetworking.send(player, new S2CWitchCauldronSyncPayload(getPos(), mode, waterAmount));
+        super.markDirty();
+    }
+    // used by client to update data from server
+    public void setData(int mode, int waterAmount)
+    {
+        this.mode = mode;
+        this.waterAmount = waterAmount;
+    }
+
+    @Override
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup)
+    {
+        super.writeNbt(nbt, registryLookup);
+
+        nbt.putInt("mode", mode);
+        nbt.putInt("waterAmount", waterAmount);
+    }
+    @Override
+    protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup)
+    {
+        mode = nbt.getInt("mode");
+        waterAmount = nbt.getInt("waterAmount");
+
+        markDirty();
+
+        super.readNbt(nbt, registryLookup);
+    }
+
+    /* ------ FUNCTIONALITY ------ */
 
     @SuppressWarnings("unused")
     public void tick(World world, BlockPos pos, BlockState state)
@@ -49,7 +95,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
                 {
                     if (holdingWaterBucket)
                     {
-                        waterAmount = 3;
+                        waterAmount = 3; markDirty();
                         interactionOccurred = true;
                         heldStack.decrement(1);
                         player.setStackInHand(Hand.MAIN_HAND, heldStack);
@@ -57,7 +103,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
                     }
                     else if (holdingGlassBottle && glassBottleHasWater)
                     {
-                        waterAmount = waterAmount + 1;
+                        waterAmount = waterAmount + 1; markDirty();
                         interactionOccurred = true;
                         heldStack.decrement(1);
                         player.setStackInHand(Hand.MAIN_HAND, heldStack);
@@ -77,11 +123,11 @@ public class WitchCauldronBlockEntity extends BlockEntity
                             player.setStackInHand(Hand.MAIN_HAND, heldStack);
                             player.giveItemStack(Items.WATER_BUCKET.getDefaultStack());
                         }
-                        waterAmount = 0;
+                        waterAmount = 0; markDirty();
                     }
                     else if (holdingGlassBottle && !glassBottleHasWater)
                     {
-                        waterAmount = waterAmount - 1;
+                        waterAmount = waterAmount - 1; markDirty();
                         interactionOccurred = true;
                         heldStack.decrement(1);
                         player.setStackInHand(Hand.MAIN_HAND, heldStack);

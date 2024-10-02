@@ -3,6 +3,7 @@ package com.freddy.craftyconcoctions;
 import com.freddy.craftyconcoctions.block.ModBlockEntities;
 import com.freddy.craftyconcoctions.block.ModBlocks;
 import com.freddy.craftyconcoctions.item.ModItemGroups;
+import com.freddy.craftyconcoctions.networking.ModMessages;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -21,5 +22,6 @@ public class CraftyConcoctions implements ModInitializer
 		ModBlocks.register();
 		ModItemGroups.register();
 		ModBlockEntities.register();
+		ModMessages.registerS2C();
 	}
 }
