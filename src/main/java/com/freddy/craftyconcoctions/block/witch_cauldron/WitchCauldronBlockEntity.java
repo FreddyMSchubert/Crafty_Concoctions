@@ -43,6 +43,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
     public int waterAmount = 0; // bucket = +3, bottle = +1; max = 3
     public int ticksSinceModeSwitch = 0;
     public List<Item> ingredients = new ArrayList<>();
+    public ItemStack output = ItemStack.EMPTY;
 
     boolean initialMarkDirtyCalled = false; // otherwise renderer won't show anything until something changes
 
@@ -50,6 +51,8 @@ public class WitchCauldronBlockEntity extends BlockEntity
     {
         mode = newMode;
         ticksSinceModeSwitch = 0;
+        if (newMode == 2)
+            output = ResultCalculator.getResult(ingredients);
         markDirty();
     }
 
@@ -105,7 +108,6 @@ public class WitchCauldronBlockEntity extends BlockEntity
 
     /* ------ FUNCTIONALITY ------ */
 
-    @SuppressWarnings("unused")
     public void tick(World world, BlockPos pos, BlockState state)
     {
         ticksSinceModeSwitch++;
@@ -117,10 +119,18 @@ public class WitchCauldronBlockEntity extends BlockEntity
 
         switch (mode)
         {
-            case 0:
             case 1:
+                if (isHeated(pos, world))
+                    switchModeTo(2);
+            case 0:
                 if (waterAmount > 0 && ticksSinceModeSwitch % 5 == 0)
                     attemptToPickUpIngredient();
+                break;
+            case 2:
+                if (ticksSinceModeSwitch >= WitchCauldronSettings.BREWING_MODE_DURATION_TICKS / 2 && !ingredients.isEmpty())
+                    ingredients.clear();
+                if (ticksSinceModeSwitch >= WitchCauldronSettings.BREWING_MODE_DURATION_TICKS)
+                    switchModeTo(3);
                 break;
         }
     }
@@ -198,6 +208,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
                         }
                     }
                 }
+                break;
 
             case 1:
                 if (player.getStackInHand(Hand.MAIN_HAND).isEmpty() && player.getStackInHand(Hand.OFF_HAND).isEmpty())
@@ -209,6 +220,27 @@ public class WitchCauldronBlockEntity extends BlockEntity
                         markDirty();
                         interactionOccurred = true;
                     }
+                }
+                break;
+
+            case 3:
+                if (heldStack.getItem() == Items.GLASS_BOTTLE)
+                {
+                    if (gameMode != GameMode.CREATIVE)
+                    {
+                        heldStack.decrement(1);
+                        player.setStackInHand(Hand.MAIN_HAND, heldStack);
+                    }
+                    player.giveItemStack(output.copy());
+
+                    waterAmount--;
+                    if (waterAmount == 0)
+                    {
+                        output = ItemStack.EMPTY;
+                        switchModeTo(0);
+                    }
+
+                    interactionOccurred = true;
                 }
         }
 
@@ -231,9 +263,6 @@ public class WitchCauldronBlockEntity extends BlockEntity
             ingredients.add(itemStack.getItem());
             itemStack.decrement(1);
             markDirty();
-
-            if (isHeated(pos, world))
-                switchModeTo(2);
         }
     }
 
