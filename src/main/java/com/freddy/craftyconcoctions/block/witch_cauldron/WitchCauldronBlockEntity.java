@@ -197,6 +197,18 @@ public class WitchCauldronBlockEntity extends BlockEntity
                         }
                     }
                 }
+
+            case 1:
+                if (player.getStackInHand(Hand.MAIN_HAND).isEmpty() && player.getStackInHand(Hand.OFF_HAND).isEmpty())
+                {
+                    if (!ingredients.isEmpty())
+                    {
+                        ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), ingredients.getFirst().getDefaultStack());
+                        ingredients.removeFirst();
+                        markDirty();
+                        interactionOccurred = true;
+                    }
+                }
         }
 
         return interactionOccurred;
