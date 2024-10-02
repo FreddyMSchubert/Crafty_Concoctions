@@ -1,6 +1,7 @@
 package com.freddy.craftyconcoctions.block.witch_cauldron;
 
 import com.freddy.craftyconcoctions.block.ModBlockEntities;
+import com.freddy.craftyconcoctions.block.ModBlockTags;
 import com.freddy.craftyconcoctions.item.ModItemTags;
 import com.freddy.craftyconcoctions.networking.payload.S2CWitchCauldronSyncPayload;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -230,6 +231,9 @@ public class WitchCauldronBlockEntity extends BlockEntity
             ingredients.add(itemStack.getItem());
             itemStack.decrement(1);
             markDirty();
+
+            if (isHeated(pos, world))
+                switchModeTo(2);
         }
     }
 
@@ -240,5 +244,12 @@ public class WitchCauldronBlockEntity extends BlockEntity
                 ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), ingredient.getDefaultStack());
         if (waterAmount == 3)
             world.setBlockState(pos, Blocks.WATER.getDefaultState());
+    }
+
+    public boolean isHeated(BlockPos pos, World world)
+    {
+        BlockPos belowPos = pos.down();
+        BlockState belowState = world.getBlockState(belowPos);
+        return belowState.isIn(ModBlockTags.HEATING_BLOCKS);
     }
 }
