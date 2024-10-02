@@ -1,24 +1,33 @@
 package com.freddy.craftyconcoctions.block.witch_cauldron;
 
+import com.freddy.craftyconcoctions.CraftyConcoctions;
 import com.freddy.craftyconcoctions.block.ModBlockEntities;
+import com.freddy.craftyconcoctions.item.ModItemTags;
 import com.freddy.craftyconcoctions.networking.payload.S2CWitchCauldronSyncPayload;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.PotionContentsComponent;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.potion.Potions;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WitchCauldronBlockEntity extends BlockEntity
 {
@@ -30,6 +39,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
     public int mode = 0; // 0 = inputting water, 1 = inputting ingredients, 2 = brewing, 3 = outputting potion
     public int waterAmount = 0; // bucket = +3, bottle = +1; max = 3
     public int ticksSinceModeSwitch = 0;
+    public List<Item> ingredients = new ArrayList<>();
 
     boolean initialMarkDirtyCalled = false; // otherwise renderer won't show anything until something changes
 
@@ -48,15 +58,16 @@ public class WitchCauldronBlockEntity extends BlockEntity
         if (world == null || world.isClient)
             return;
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, getPos()))
-            ServerPlayNetworking.send(player, new S2CWitchCauldronSyncPayload(getPos(), mode, waterAmount, ticksSinceModeSwitch));
+            S2CWitchCauldronSyncPayload.send(player, getPos(), mode, waterAmount, ticksSinceModeSwitch, ingredients);
         super.markDirty();
     }
     // used by client to update data from server
-    public void setData(int mode, int waterAmount, int ticksSinceModeSwitch)
+    public void setData(int mode, int waterAmount, int ticksSinceModeSwitch, List<Item> ingredients)
     {
-        this.mode = mode;
+        switchModeTo(mode);
         this.waterAmount = waterAmount;
         this.ticksSinceModeSwitch = ticksSinceModeSwitch;
+        this.ingredients = ingredients;
     }
 
     @Override
@@ -66,12 +77,23 @@ public class WitchCauldronBlockEntity extends BlockEntity
 
         nbt.putInt("mode", mode);
         nbt.putInt("waterAmount", waterAmount);
+        nbt.putInt("ticksSinceModeSwitch", ticksSinceModeSwitch);
+
+        nbt.putInt("ingredientsLength", ingredients.size());
+        for (int i = 0; i < ingredients.size(); i++)
+            nbt.putString("ingredient" + i, ingredients.get(i).toString());
     }
     @Override
     protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup)
     {
-        mode = nbt.getInt("mode");
+        switchModeTo(nbt.getInt("mode"));
         waterAmount = nbt.getInt("waterAmount");
+        ticksSinceModeSwitch = nbt.getInt("ticksSinceModeSwitch");
+
+        int ingredientsLength = nbt.getInt("ingredientsLength");
+        ingredients.clear();
+        for (int i = 0; i < ingredientsLength; i++)
+            ingredients.add(Registries.ITEM.get(Identifier.of(nbt.getString("ingredient" + i))));
 
         markDirty();
 
@@ -88,6 +110,15 @@ public class WitchCauldronBlockEntity extends BlockEntity
         {
             markDirty();
             initialMarkDirtyCalled = true;
+        }
+
+        switch (mode)
+        {
+            case 0:
+            case 1:
+                if (waterAmount > 0)
+                    attemptToPickUpIngredient();
+                break;
         }
     }
 
@@ -155,5 +186,27 @@ public class WitchCauldronBlockEntity extends BlockEntity
         }
 
         return interactionOccurred;
+    }
+
+    private void attemptToPickUpIngredient()
+    {
+        CraftyConcoctions.LOGGER.info("Attempting to pick up ingredient");
+        Box areaToCheck = new Box(pos.getX(), pos.getY() + 0.2f, pos.getZ(), pos.getX() + 1, pos.getY() + 0.3f, pos.getZ() + 1);
+        List<ItemEntity> items = world.getEntitiesByClass(ItemEntity.class, areaToCheck, itemEntity -> itemEntity.getStack().isIn(ModItemTags.INGREDIENTS));
+
+        CraftyConcoctions.LOGGER.info("Found " + items.size() + " items");
+
+        for (ItemEntity itemEntity : items)
+        {
+            if (ingredients.size() >= WitchCauldronSettings.MAX_INGREDIENTS)
+                return;
+            ItemStack itemStack = itemEntity.getStack();
+            ingredients.add(itemStack.getItem());
+            itemStack.decrement(1);
+            markDirty();
+        }
+
+        if (mode != 1)
+            switchModeTo(1);
     }
 }
