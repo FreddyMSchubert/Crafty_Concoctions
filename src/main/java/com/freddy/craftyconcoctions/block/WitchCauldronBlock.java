@@ -5,12 +5,15 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.function.BooleanBiFunction;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -73,5 +76,21 @@ public class WitchCauldronBlock extends BlockWithEntity
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type)
     {
         return validateTicker(type, ModBlockEntities.WITCH_CAULDRON_BE, (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
+    }
+
+    @Override
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit)
+    {
+        if (world.isClient)
+            return ActionResult.SUCCESS;
+
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity instanceof WitchCauldronBlockEntity)
+        {
+            boolean interactionOccurred = ((WitchCauldronBlockEntity) blockEntity).onUse(player);
+            if (interactionOccurred)
+                return ActionResult.CONSUME;
+        }
+        return super.onUse(state, world, pos, player, hit);
     }
 }
