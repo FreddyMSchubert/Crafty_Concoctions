@@ -1,6 +1,7 @@
 package com.freddy.craftyconcoctions.block;
 
 import com.freddy.craftyconcoctions.CraftyConcoctions;
+import com.freddy.craftyconcoctions.block.witch_cauldron.WitchCauldronBlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;

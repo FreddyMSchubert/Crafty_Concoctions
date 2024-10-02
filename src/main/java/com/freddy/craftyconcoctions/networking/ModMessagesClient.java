@@ -1,6 +1,6 @@
 package com.freddy.craftyconcoctions.networking;
 
-import com.freddy.craftyconcoctions.block.WitchCauldronBlockEntity;
+import com.freddy.craftyconcoctions.block.witch_cauldron.WitchCauldronBlockEntity;
 import com.freddy.craftyconcoctions.networking.payload.S2CWitchCauldronSyncPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.block.entity.BlockEntity;

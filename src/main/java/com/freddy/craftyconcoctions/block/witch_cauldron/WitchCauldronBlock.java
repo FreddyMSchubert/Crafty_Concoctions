@@ -1,5 +1,6 @@
-package com.freddy.craftyconcoctions.block;
+package com.freddy.craftyconcoctions.block.witch_cauldron;
 
+import com.freddy.craftyconcoctions.block.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;

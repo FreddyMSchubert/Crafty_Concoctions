@@ -1,5 +1,6 @@
-package com.freddy.craftyconcoctions.block;
+package com.freddy.craftyconcoctions.block.witch_cauldron;
 
+import com.freddy.craftyconcoctions.block.ModBlockEntities;
 import com.freddy.craftyconcoctions.networking.payload.S2CWitchCauldronSyncPayload;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -28,6 +29,16 @@ public class WitchCauldronBlockEntity extends BlockEntity
 
     public int mode = 0; // 0 = inputting water, 1 = inputting ingredients, 2 = brewing, 3 = outputting potion
     public int waterAmount = 0; // bucket = +3, bottle = +1; max = 3
+    public int ticksSinceModeSwitch = 0;
+
+    boolean initialMarkDirtyCalled = false; // otherwise renderer won't show anything until something changes
+
+    private void switchModeTo(int newMode)
+    {
+        mode = newMode;
+        ticksSinceModeSwitch = 0;
+        markDirty();
+    }
 
     /* ------ DATA STORAGE & SYNC ------ */
 
@@ -71,6 +82,12 @@ public class WitchCauldronBlockEntity extends BlockEntity
     @SuppressWarnings("unused")
     public void tick(World world, BlockPos pos, BlockState state)
     {
+        ticksSinceModeSwitch++;
+        if (!initialMarkDirtyCalled)
+        {
+            markDirty();
+            initialMarkDirtyCalled = true;
+        }
     }
 
     // returns whether an interaction occurred

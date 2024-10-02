@@ -1,6 +1,7 @@
 package com.freddy.craftyconcoctions.block;
 
 import com.freddy.craftyconcoctions.CraftyConcoctions;
+import com.freddy.craftyconcoctions.block.witch_cauldron.WitchCauldronBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
