@@ -106,6 +106,10 @@ public class Color
     {
         return (RED << 16) | (GREEN << 8) | BLUE;
     }
+    public int getArgbInt()
+    {
+        return (ALPHA << 24) | (RED << 16) | (GREEN << 8) | BLUE;
+    }
 
     public String getHex()
     {

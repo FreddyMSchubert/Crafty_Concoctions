@@ -3,6 +3,7 @@ package com.freddy.craftyconcoctions.block.witch_cauldron;
 import com.freddy.craftyconcoctions.effect.ModEffects;
 import com.freddy.craftyconcoctions.item.ModItems;
 import com.freddy.craftyconcoctions.util.Color;
+import com.freddy.craftyconcoctions.util.ModDataComponentTypes;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -21,7 +22,9 @@ public class ResultCalculator
     {
         ItemStack stack = new ItemStack(ModItems.WITCH_POTION);
         stack.set(DataComponentTypes.FOOD, new FoodComponent(0, 0f, true, 2f, Optional.ofNullable(Items.GLASS_BOTTLE.getDefaultStack()), Arrays.asList(new FoodComponent.StatusEffectEntry(new StatusEffectInstance(StatusEffects.ABSORPTION, 200, 1), 1f))));
-        return new ResultCalculatorOutput(stack, new Color(255, 125, 75));
+        Color color = new Color(255, 125, 75);
+        stack.set(ModDataComponentTypes.POTION_COLOR, color.getArgbInt());
+        return new ResultCalculatorOutput(stack, color);
     }
 
     private static final List<EffectPair> effectPairs = Arrays.asList( // fermented spider eyes are placeholders for when i dont know yet // make this use lists for multiple options // and add goal color tones

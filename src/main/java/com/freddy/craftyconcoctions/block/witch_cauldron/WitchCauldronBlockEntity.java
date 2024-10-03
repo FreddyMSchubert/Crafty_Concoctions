@@ -43,36 +43,12 @@ public class WitchCauldronBlockEntity extends BlockEntity
     public int mode = 0; // 0 = inputting water, 1 = inputting ingredients, 2 = brewing, 3 = outputting potion
     public int waterAmount = 0; // bucket = +3, bottle = +1; max = 3
     public int ticksSinceModeSwitch = 0;
-    public Color currColor = WitchCauldronSettings.WATER_COLOR;
-    public Color goalColor = WitchCauldronSettings.WATER_COLOR;
+    public Color currColor = WitchCauldronSettings.WATER_COLOR.copy();
+    public Color goalColor = WitchCauldronSettings.WATER_COLOR.copy();
     public List<Item> ingredients = new ArrayList<>();
     public ItemStack output = ItemStack.EMPTY;
 
     boolean initialMarkDirtyCalled = false; // otherwise renderer won't show anything until something changes
-
-    private void switchModeTo(int newMode)
-    {
-        mode = newMode;
-        ticksSinceModeSwitch = 0;
-
-        switch (newMode)
-        {
-            case 0:
-                ingredients.clear();
-                output = ItemStack.EMPTY;
-                goalColor = WitchCauldronSettings.WATER_COLOR;
-                break;
-
-            case 2:
-                ResultCalculator.ResultCalculatorOutput result = ResultCalculator.getResult(ingredients);
-                output = result.output;
-                goalColor = result.color;
-                markDirty();
-                break;
-        }
-
-        markDirty();
-    }
 
     /* ------ DATA STORAGE & SYNC ------ */
 
@@ -88,7 +64,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
     // used by client to update data from server
     public void setData(int mode, int waterAmount, int ticksSinceModeSwitch, List<Item> ingredients, Color currColor, Color goalColor)
     {
-        switchModeTo(mode);
+        this.mode = mode;
         this.waterAmount = waterAmount;
         this.ticksSinceModeSwitch = ticksSinceModeSwitch;
         this.ingredients = ingredients;
@@ -114,7 +90,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
     @Override
     protected void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup)
     {
-        switchModeTo(nbt.getInt("mode"));
+        mode = nbt.getInt("mode");
         waterAmount = nbt.getInt("waterAmount");
         ticksSinceModeSwitch = nbt.getInt("ticksSinceModeSwitch");
         currColor = new Color(nbt.getCompound("currColor"));
@@ -141,30 +117,61 @@ public class WitchCauldronBlockEntity extends BlockEntity
             initialMarkDirtyCalled = true;
         }
 
-        if (mode == 2)
-        {
-            if (!currColor.equals(goalColor))
-                currColor.shiftColorTowardsColor(goalColor, WitchCauldronSettings.COLOR_SHIFTING_SPEED);
-            markDirty();
-        }
-
         if (world.isClient)
             return;
 
         switch (mode)
         {
+            case 0:
+                currColor = WitchCauldronSettings.WATER_COLOR.copy();
+                goalColor = WitchCauldronSettings.WATER_COLOR.copy();
+                if (waterAmount > 0 && ticksSinceModeSwitch % 5 == 0)
+                    attemptToPickUpIngredient();
+                break;
             case 1:
                 if (isHeated(pos, world))
-                    switchModeTo(2);
-            case 0:
+                {
+                    mode = 2;
+                    ticksSinceModeSwitch = 0;
+
+                    ResultCalculator.ResultCalculatorOutput result = ResultCalculator.getResult(ingredients);
+                    output = result.output;
+                    goalColor = result.color;
+
+                    markDirty();
+                    break;
+                }
                 if (waterAmount > 0 && ticksSinceModeSwitch % 5 == 0)
                     attemptToPickUpIngredient();
                 break;
             case 2:
-                if (ticksSinceModeSwitch >= WitchCauldronSettings.BREWING_MODE_DURATION_TICKS / 2 && !ingredients.isEmpty())
+                if (!currColor.equals(goalColor))
+                {
+                    currColor.shiftColorTowardsColor(goalColor, getColorShiftSpeed());
+                    markDirty();
+                }
+                if (!ingredients.isEmpty() && ticksSinceModeSwitch >= WitchCauldronSettings.BREWING_MODE_DURATION_TICKS / 2)
+                {
                     ingredients.clear();
+                    markDirty();
+                }
                 if (ticksSinceModeSwitch >= WitchCauldronSettings.BREWING_MODE_DURATION_TICKS)
-                    switchModeTo(3);
+                {
+                    mode = 3;
+                    ticksSinceModeSwitch = 0;
+                    markDirty();
+                }
+                break;
+            case 3:
+                if (waterAmount == 0)
+                {
+                    output = ItemStack.EMPTY;
+                    currColor = WitchCauldronSettings.WATER_COLOR.copy();
+                    goalColor = WitchCauldronSettings.WATER_COLOR.copy();
+                    mode = 0;
+                    ticksSinceModeSwitch = 0;
+                    markDirty();
+                }
                 break;
         }
     }
@@ -172,6 +179,9 @@ public class WitchCauldronBlockEntity extends BlockEntity
     // returns whether an interaction occurred
     public boolean onUse(PlayerEntity player)
     {
+        if (world.isClient())
+            return false;
+
         boolean interactionOccurred = false;
 
         ItemStack heldStack = player.getStackInHand(Hand.MAIN_HAND);
@@ -268,13 +278,11 @@ public class WitchCauldronBlockEntity extends BlockEntity
                     player.giveItemStack(output.copy());
 
                     waterAmount--;
-                    if (waterAmount == 0)
-                        switchModeTo(0);
-
                     markDirty();
 
                     interactionOccurred = true;
                 }
+                break;
         }
 
         return interactionOccurred;
@@ -286,7 +294,11 @@ public class WitchCauldronBlockEntity extends BlockEntity
         List<ItemEntity> items = world.getEntitiesByClass(ItemEntity.class, areaToCheck, itemEntity -> itemEntity.getStack().isIn(ModItemTags.INGREDIENTS));
 
         if (!items.isEmpty() && mode != 1)
-            switchModeTo(1);
+        {
+            mode = 1;
+            ticksSinceModeSwitch = 0;
+            markDirty();
+        }
 
         for (ItemEntity itemEntity : items)
         {
@@ -313,5 +325,16 @@ public class WitchCauldronBlockEntity extends BlockEntity
         BlockPos belowPos = pos.down();
         BlockState belowState = world.getBlockState(belowPos);
         return belowState.isIn(ModBlockTags.HEATING_BLOCKS);
+    }
+
+    public int getColorShiftSpeed()
+    {
+        int largestDiff = 1;
+        largestDiff = Math.max(largestDiff, Math.abs(currColor.RED - goalColor.RED));
+        largestDiff = Math.max(largestDiff, Math.abs(currColor.GREEN - goalColor.GREEN));
+        largestDiff = Math.max(largestDiff, Math.abs(currColor.BLUE - goalColor.BLUE));
+        largestDiff = Math.max(largestDiff, Math.abs(currColor.ALPHA - goalColor.ALPHA));
+
+        return largestDiff / (WitchCauldronSettings.BREWING_MODE_DURATION_TICKS - ticksSinceModeSwitch);
     }
 }
