@@ -34,18 +34,18 @@ public class WitchCauldronBlockEntityRenderer implements BlockEntityRenderer<Wit
             new ItemDisplayProperties(0.125f + pixel, 0f, 0.5f, -22.5f, 270f, 0f), // West side
     };
 
-    public WitchCauldronBlockEntityRenderer(BlockEntityRendererFactory.Context context) {
-    }
+    public WitchCauldronBlockEntityRenderer(BlockEntityRendererFactory.Context context) {}
 
     @Override
     public void render(WitchCauldronBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay)
     {
         // 1. Render water level
-        boolean isMoving = entity.mode == 1;
-        float baseWaterHeight = entity.waterAmount * 0.2f + 0.2f;
+        double waterHeight = entity.waterAmount * 0.2 + 0.2;
+        if (entity.mode == 2)
+            waterHeight = getSineAt(entity.ticksSinceModeSwitch, WitchCauldronSettings.BREWING_MODE_DURATION_TICKS, waterHeight, 0.9999f);
 
         matrices.push();
-        matrices.translate(0.5, baseWaterHeight, 0.5);
+        matrices.translate(0.5, waterHeight, 0.5);
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(Identifier.of(CraftyConcoctions.MOD_ID, "textures/block/fluid/still/fluid_still_" + (entity.ticksSinceModeSwitch / 2 % idleFrames + 1) + ".png")));
         Matrix4f matrixPos = matrices.peek().getPositionMatrix();
@@ -110,5 +110,15 @@ public class WitchCauldronBlockEntityRenderer implements BlockEntityRenderer<Wit
 
             matrices.pop();
         }
+    }
+
+    public static double getSineAt(int tick, int animationLength, double minHeight, double maxHeight)
+    {
+        double amplitude = (maxHeight - minHeight) / 2.0;
+        double verticalShift = minHeight + amplitude;
+
+        double angle = Math.PI * 2 * tick / (double) animationLength - Math.PI / 2;
+
+        return amplitude * Math.sin(angle) + verticalShift;
     }
 }

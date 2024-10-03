@@ -264,6 +264,12 @@ public class WitchCauldronBlockEntity extends BlockEntity
                         markDirty();
                         interactionOccurred = true;
                     }
+                    if (ingredients.isEmpty())
+                    {
+                        mode = 0;
+                        ticksSinceModeSwitch = 0;
+                        markDirty();
+                    }
                 }
                 break;
 
