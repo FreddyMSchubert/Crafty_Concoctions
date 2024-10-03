@@ -1,6 +1,7 @@
 package com.freddy.craftyconcoctions.util;
 
 import com.freddy.craftyconcoctions.CraftyConcoctions;
+import net.minecraft.nbt.NbtCompound;
 
 @SuppressWarnings("unused")
 public class Color
@@ -34,6 +35,14 @@ public class Color
         GREEN = green;
         BLUE = blue;
         ALPHA = alpha;
+    }
+
+    public Color(NbtCompound nbt)
+    {
+        RED = nbt.getInt("red");
+        GREEN = nbt.getInt("green");
+        BLUE = nbt.getInt("blue");
+        ALPHA = nbt.getInt("alpha");
     }
 
     public Color copy()
@@ -106,5 +115,22 @@ public class Color
     public String getRGBA()
     {
         return String.format("rgba(%d, %d, %d, %d)", RED, GREEN, BLUE, ALPHA);
+    }
+
+    // ----- NBT & DATA STORAGE -----
+
+    public NbtCompound asNbt()
+    {
+        NbtCompound nbt = new NbtCompound();
+        nbt.putInt("red", RED);
+        nbt.putInt("green", GREEN);
+        nbt.putInt("blue", BLUE);
+        nbt.putInt("alpha", ALPHA);
+        return nbt;
+    }
+
+    public static Color fromNbt(NbtCompound nbt)
+    {
+        return new Color(nbt.getInt("red"), nbt.getInt("green"), nbt.getInt("blue"), nbt.getInt("alpha"));
     }
 }

@@ -1,6 +1,7 @@
 package com.freddy.craftyconcoctions.networking.payload;
 
 import com.freddy.craftyconcoctions.networking.ModMessages;
+import com.freddy.craftyconcoctions.util.Color;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
@@ -13,17 +14,12 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 
-public record S2CWitchCauldronSyncPayload(BlockPos pos, int mode, int waterAmount, int ticksSinceModeSwitch, int ingredientsLength, NbtCompound ingredients) implements CustomPayload
+public record S2CWitchCauldronSyncPayload(NbtCompound data) implements CustomPayload
 {
     public static final CustomPayload.Id<S2CWitchCauldronSyncPayload> ID = new CustomPayload.Id<>(ModMessages.S2C_WITCH_CAULDRON_SYNC_ID);
 
     public static final PacketCodec<RegistryByteBuf, S2CWitchCauldronSyncPayload> CODEC = PacketCodec.tuple(
-            BlockPos.PACKET_CODEC, S2CWitchCauldronSyncPayload::pos,
-            PacketCodecs.INTEGER, S2CWitchCauldronSyncPayload::mode,
-            PacketCodecs.INTEGER, S2CWitchCauldronSyncPayload::waterAmount,
-            PacketCodecs.INTEGER, S2CWitchCauldronSyncPayload::ticksSinceModeSwitch,
-            PacketCodecs.INTEGER, S2CWitchCauldronSyncPayload::ingredientsLength,
-            PacketCodecs.NBT_COMPOUND, S2CWitchCauldronSyncPayload::ingredients,
+            PacketCodecs.NBT_COMPOUND, S2CWitchCauldronSyncPayload::data,
             S2CWitchCauldronSyncPayload::new
     );
 
@@ -33,11 +29,22 @@ public record S2CWitchCauldronSyncPayload(BlockPos pos, int mode, int waterAmoun
         return ID;
     }
 
-    public static void send(ServerPlayerEntity player, BlockPos pos, int mode, int waterAmount, int ticksSinceModeSwitch, List<Item> ingredients)
+    public static void send(ServerPlayerEntity player, BlockPos pos, int mode, int waterAmount, int ticksSinceModeSwitch, List<Item> ingredients, Color currColor, Color goalColor)
     {
         NbtCompound nbt = new NbtCompound();
+
+        nbt.putInt("x", pos.getX());
+        nbt.putInt("y", pos.getY());
+        nbt.putInt("z", pos.getZ());
+        nbt.putInt("mode", mode);
+        nbt.putInt("waterAmount", waterAmount);
+        nbt.putInt("ticksSinceModeSwitch", ticksSinceModeSwitch);
+        nbt.putInt("ingredientsLength", ingredients.size());
         for (int i = 0; i < ingredients.size(); i++)
             nbt.putString("item" + i, ingredients.get(i).toString());
-        ServerPlayNetworking.send(player, new S2CWitchCauldronSyncPayload(pos, mode, waterAmount, ticksSinceModeSwitch, ingredients.size(), nbt));
+        nbt.put("currColor", currColor.asNbt());
+        nbt.put("goalColor", goalColor.asNbt());
+
+        ServerPlayNetworking.send(player, new S2CWitchCauldronSyncPayload(nbt));
     }
 }
