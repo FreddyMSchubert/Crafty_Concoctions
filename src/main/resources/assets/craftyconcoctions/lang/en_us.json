@@ -4,8 +4,15 @@
   "block.craftyconcoctions.witch_cauldron": "Witch Cauldron",
   "item.craftyconcoctions.witch_potion": "Witch Potion",
 
-  "tag.item.craftyconcoctions.ingredients": "Ingredients",
   "tag.item.craftyconcoctions.modifiers": "Modifiers",
   "tag.item.craftyconcoctions.potion_definers": "Potion Definers",
-  "tag.block.craftyconcoctions.heating_blocks": "Heating Blocks"
+  "tag.item.craftyconcoctions.goodness_definers": "Goodness Definers",
+  "tag.block.craftyconcoctions.heating_blocks": "Heating Blocks",
+
+  "item.craftyconcoctions.potion_type.good": "Good",
+  "item.craftyconcoctions.potion_type.bad": "Bad",
+  "item.craftyconcoctions.potion_type.mundane": "Mundane",
+  "item.craftyconcoctions.potion_type.awkward": "Awkward",
+  "item.craftyconcoctions.potion_type.thick": "Thick",
+  "item.craftyconcoctions.potion_type.diluted": "Diluted"
 }

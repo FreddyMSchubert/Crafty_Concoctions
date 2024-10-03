@@ -34,34 +34,12 @@ public class ModItemTagProvider extends FabricTagProvider.ItemTagProvider
                 .add(Items.COBWEB)
                 .add(Items.SLIME_BLOCK)
                 .add(Items.STONE);
+        getOrCreateTagBuilder(ModItemTags.GOODNESS_DEFINERS)
+                .add(Items.FERMENTED_SPIDER_EYE)
+                .add(Items.NETHER_WART);
         getOrCreateTagBuilder(ModItemTags.MODIFIERS)
-                .add(Items.NETHER_WART)
                 .add(Items.REDSTONE)
                 .add(Items.GLOWSTONE_DUST)
-                .add(Items.FERMENTED_SPIDER_EYE)
-                .add(Items.DRAGON_BREATH)
-                .add(Items.GUNPOWDER);
-
-        getOrCreateTagBuilder(ModItemTags.INGREDIENTS)
-                .add(Items.SPIDER_EYE)
-                .add(Items.SUGAR)
-                .add(Items.RABBIT_FOOT)
-                .add(Items.BLAZE_POWDER)
-                .add(Items.GLISTERING_MELON_SLICE)
-                .add(Items.GHAST_TEAR)
-                .add(Items.PUFFERFISH)
-                .add(Items.TURTLE_HELMET)
-                .add(Items.MAGMA_CREAM)
-                .add(Items.GOLDEN_CARROT)
-                .add(Items.PHANTOM_MEMBRANE)
-                .add(Items.BREEZE_ROD)
-                .add(Items.COBWEB)
-                .add(Items.SLIME_BLOCK)
-                .add(Items.STONE)
-                .add(Items.NETHER_WART)
-                .add(Items.REDSTONE)
-                .add(Items.GLOWSTONE_DUST)
-                .add(Items.FERMENTED_SPIDER_EYE)
                 .add(Items.DRAGON_BREATH)
                 .add(Items.GUNPOWDER);
     }

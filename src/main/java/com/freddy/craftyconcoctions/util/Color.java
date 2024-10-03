@@ -3,6 +3,8 @@ package com.freddy.craftyconcoctions.util;
 import com.freddy.craftyconcoctions.CraftyConcoctions;
 import net.minecraft.nbt.NbtCompound;
 
+import java.util.List;
+
 @SuppressWarnings("unused")
 public class Color
 {
@@ -91,6 +93,42 @@ public class Color
             return Math.min(current + amount, target);
         else
             return Math.max(current - amount, target);
+    }
+
+    public static Color blendColors(Color... colors)
+    {
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+        int alpha = 0;
+
+        for (Color color : colors)
+        {
+            red += color.RED;
+            green += color.GREEN;
+            blue += color.BLUE;
+            alpha += color.ALPHA;
+        }
+
+        return new Color(red / colors.length, green / colors.length, blue / colors.length, alpha / colors.length);
+    }
+
+    public static Color blendColors(List<Color> colors)
+    {
+        int red = 0;
+        int green = 0;
+        int blue = 0;
+        int alpha = 0;
+
+        for (Color color : colors)
+        {
+            red += color.RED;
+            green += color.GREEN;
+            blue += color.BLUE;
+            alpha += color.ALPHA;
+        }
+
+        return new Color(red / colors.size(), green / colors.size(), blue / colors.size(), alpha / colors.size());
     }
 
     // ----- COLOR COMPARISON -----

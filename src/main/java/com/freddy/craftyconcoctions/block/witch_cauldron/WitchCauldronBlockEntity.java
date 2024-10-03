@@ -2,7 +2,6 @@ package com.freddy.craftyconcoctions.block.witch_cauldron;
 
 import com.freddy.craftyconcoctions.block.ModBlockEntities;
 import com.freddy.craftyconcoctions.block.ModBlockTags;
-import com.freddy.craftyconcoctions.item.ModItemTags;
 import com.freddy.craftyconcoctions.networking.payload.S2CWitchCauldronSyncPayload;
 import com.freddy.craftyconcoctions.util.Color;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -297,7 +296,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
     private void attemptToPickUpIngredient()
     {
         Box areaToCheck = new Box(pos.getX(), pos.getY() + 0.2f, pos.getZ(), pos.getX() + 1, pos.getY() + 0.3f, pos.getZ() + 1);
-        List<ItemEntity> items = world.getEntitiesByClass(ItemEntity.class, areaToCheck, itemEntity -> itemEntity.getStack().isIn(ModItemTags.INGREDIENTS));
+        List<ItemEntity> items = world.getEntitiesByClass(ItemEntity.class, areaToCheck, itemEntity -> true);
 
         if (!items.isEmpty() && mode != 1)
         {

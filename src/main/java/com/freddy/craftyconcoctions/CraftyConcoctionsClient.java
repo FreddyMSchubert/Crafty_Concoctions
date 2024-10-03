@@ -19,6 +19,6 @@ public class CraftyConcoctionsClient implements ClientModInitializer
 
         BlockEntityRendererFactories.register(ModBlockEntities.WITCH_CAULDRON_BE, WitchCauldronBlockEntityRenderer::new);
 
-        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex > 0 ? -1 : ColorHelper.Argb.fullAlpha(stack.getOrDefault(ModDataComponentTypes.POTION_COLOR, 0xFFFFFFFF)), ModItems.WITCH_POTION);
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex > 0 ? -1 : ColorHelper.Argb.fullAlpha(stack.getOrDefault(ModDataComponentTypes.POTION_COLOR, 0xFF00FFFF)), ModItems.WITCH_POTION);
     }
 }

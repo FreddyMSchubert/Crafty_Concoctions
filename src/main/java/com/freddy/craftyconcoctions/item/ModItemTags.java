@@ -9,12 +9,12 @@ import net.minecraft.util.Identifier;
 public class ModItemTags
 {
     // ingredients
-    public static final TagKey<Item> INGREDIENTS =
-            createTag("ingredients");
-    public static final TagKey<Item> MODIFIERS =
-            createTag("modifiers");
     public static final TagKey<Item> POTION_DEFINERS =
             createTag("potion_definers");
+    public static final TagKey<Item> GOODNESS_DEFINERS =
+            createTag("goodness_definers");
+    public static final TagKey<Item> MODIFIERS =
+            createTag("modifiers");
 
     private static TagKey<Item> createTag(String name)
     {
