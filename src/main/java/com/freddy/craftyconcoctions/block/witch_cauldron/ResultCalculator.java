@@ -2,6 +2,7 @@ package com.freddy.craftyconcoctions.block.witch_cauldron;
 
 import com.freddy.craftyconcoctions.effect.ModEffects;
 import com.freddy.craftyconcoctions.item.ModItems;
+import com.freddy.craftyconcoctions.util.Color;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -16,14 +17,14 @@ import java.util.Optional;
 
 public class ResultCalculator
 {
-    public static ItemStack getResult(List<Item> ingredients)
+    public static ResultCalculatorOutput getResult(List<Item> ingredients)
     {
         ItemStack stack = new ItemStack(ModItems.WITCH_POTION);
         stack.set(DataComponentTypes.FOOD, new FoodComponent(0, 0f, true, 2f, Optional.ofNullable(Items.GLASS_BOTTLE.getDefaultStack()), Arrays.asList(new FoodComponent.StatusEffectEntry(new StatusEffectInstance(StatusEffects.ABSORPTION, 200, 1), 1f))));
-        return stack;
+        return new ResultCalculatorOutput(stack, new Color(255, 125, 75));
     }
 
-    List<EffectPair> effectPairs = Arrays.asList( // fermented spider eyes are placeholders for when i dont know yet // make this use lists for multiple options
+    private static final List<EffectPair> effectPairs = Arrays.asList( // fermented spider eyes are placeholders for when i dont know yet // make this use lists for multiple options // and add goal color tones
             new EffectPair(new StatusEffectInstance(StatusEffects.SPEED, 200, 1), new StatusEffectInstance(StatusEffects.SLOWNESS, 200, 1), Items.SUGAR, Items.TURTLE_SCUTE),
             new EffectPair(new StatusEffectInstance(StatusEffects.STRENGTH, 200, 1), new StatusEffectInstance(StatusEffects.WEAKNESS, 200, 1), Items.BLAZE_POWDER, Items.FERMENTED_SPIDER_EYE),
             new EffectPair(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 200, 1), new StatusEffectInstance(ModEffects.JUMP_REDUCTION, 200, 1), Items.RABBIT_FOOT, Items.FERMENTED_SPIDER_EYE),
@@ -38,6 +39,18 @@ public class ResultCalculator
             new EffectPair(new StatusEffectInstance(StatusEffects.OOZING, 200, 1), new StatusEffectInstance(StatusEffects.INFESTED, 200, 1), Items.SLIME_BALL, Items.STONE),
             new EffectPair(new StatusEffectInstance(StatusEffects.WIND_CHARGED, 200, 1), new StatusEffectInstance(StatusEffects.WEAVING, 200, 1), Items.WIND_CHARGE, Items.COBWEB)
     );
+
+    public static class ResultCalculatorOutput
+    {
+        ItemStack output;
+        Color color;
+
+        ResultCalculatorOutput(ItemStack output, Color color)
+        {
+            this.output = output;
+            this.color = color;
+        }
+    }
 
     static class EffectPair
     {

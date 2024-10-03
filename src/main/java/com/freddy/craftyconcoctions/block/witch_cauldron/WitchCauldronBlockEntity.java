@@ -4,6 +4,7 @@ import com.freddy.craftyconcoctions.block.ModBlockEntities;
 import com.freddy.craftyconcoctions.block.ModBlockTags;
 import com.freddy.craftyconcoctions.item.ModItemTags;
 import com.freddy.craftyconcoctions.networking.payload.S2CWitchCauldronSyncPayload;
+import com.freddy.craftyconcoctions.util.Color;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -44,6 +45,8 @@ public class WitchCauldronBlockEntity extends BlockEntity
     public int ticksSinceModeSwitch = 0;
     public List<Item> ingredients = new ArrayList<>();
     public ItemStack output = ItemStack.EMPTY;
+    public Color currColor = WitchCauldronSettings.WATER_COLOR;
+    public Color goalColor = WitchCauldronSettings.WATER_COLOR;
 
     boolean initialMarkDirtyCalled = false; // otherwise renderer won't show anything until something changes
 
@@ -51,8 +54,23 @@ public class WitchCauldronBlockEntity extends BlockEntity
     {
         mode = newMode;
         ticksSinceModeSwitch = 0;
-        if (newMode == 2)
-            output = ResultCalculator.getResult(ingredients);
+
+        switch (newMode)
+        {
+            case 0:
+                ingredients.clear();
+                output = ItemStack.EMPTY;
+                goalColor = WitchCauldronSettings.WATER_COLOR;
+                break;
+
+            case 2:
+                ResultCalculator.ResultCalculatorOutput result = ResultCalculator.getResult(ingredients);
+                output = result.output;
+                goalColor = result.color;
+                markDirty();
+                break;
+        }
+
         markDirty();
     }
 
@@ -116,6 +134,9 @@ public class WitchCauldronBlockEntity extends BlockEntity
             markDirty();
             initialMarkDirtyCalled = true;
         }
+
+        if (world.isClient)
+            return;
 
         switch (mode)
         {
@@ -235,10 +256,9 @@ public class WitchCauldronBlockEntity extends BlockEntity
 
                     waterAmount--;
                     if (waterAmount == 0)
-                    {
-                        output = ItemStack.EMPTY;
                         switchModeTo(0);
-                    }
+
+                    markDirty();
 
                     interactionOccurred = true;
                 }

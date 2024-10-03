@@ -51,10 +51,13 @@ public class WitchCauldronBlockEntityRenderer implements BlockEntityRenderer<Wit
         Matrix4f matrixPos = matrices.peek().getPositionMatrix();
         MatrixStack.Entry entry = matrices.peek();
 
-        vertexConsumer.vertex(matrixPos, -0.5f, 0.5f, 0.0f).color(WitchCauldronSettings.WATER_COLOR.RED, WitchCauldronSettings.WATER_COLOR.GREEN, WitchCauldronSettings.WATER_COLOR.BLUE, WitchCauldronSettings.WATER_COLOR.ALPHA).texture(0.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
-        vertexConsumer.vertex(matrixPos, 0.5f, 0.5f, 0.0f).color(WitchCauldronSettings.WATER_COLOR.RED, WitchCauldronSettings.WATER_COLOR.GREEN, WitchCauldronSettings.WATER_COLOR.BLUE, WitchCauldronSettings.WATER_COLOR.ALPHA).texture(1.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
-        vertexConsumer.vertex(matrixPos, 0.5f, -0.5f, 0.0f).color(WitchCauldronSettings.WATER_COLOR.RED, WitchCauldronSettings.WATER_COLOR.GREEN, WitchCauldronSettings.WATER_COLOR.BLUE, WitchCauldronSettings.WATER_COLOR.ALPHA).texture(1.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
-        vertexConsumer.vertex(matrixPos, -0.5f, -0.5f, 0.0f).color(WitchCauldronSettings.WATER_COLOR.RED, WitchCauldronSettings.WATER_COLOR.GREEN, WitchCauldronSettings.WATER_COLOR.BLUE, WitchCauldronSettings.WATER_COLOR.ALPHA).texture(0.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        if (!entity.currColor.equals(entity.goalColor))
+            entity.currColor.shiftColorTowardsColor(entity.goalColor, WitchCauldronSettings.COLOR_SHIFTING_SPEED);
+
+        vertexConsumer.vertex(matrixPos, -0.5f, 0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, entity.currColor.ALPHA).texture(0.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        vertexConsumer.vertex(matrixPos, 0.5f, 0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, entity.currColor.ALPHA).texture(1.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        vertexConsumer.vertex(matrixPos, 0.5f, -0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, entity.currColor.ALPHA).texture(1.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        vertexConsumer.vertex(matrixPos, -0.5f, -0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, entity.currColor.ALPHA).texture(0.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
 
         matrices.pop();
 
