@@ -1,13 +1,20 @@
 package com.freddy.craftyconcoctions.item;
 
+import com.freddy.craftyconcoctions.CraftyConcoctions;
 import com.freddy.craftyconcoctions.util.ModDataComponentTypes;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.FoodComponent;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.UseAction;
+
+import java.util.List;
 
 public class WitchPotionItem extends Item
 {
@@ -49,5 +56,26 @@ public class WitchPotionItem extends Item
             name = Text.translatable("item.craftyconcoctions.potion_type.diluted").append(" ").append(name);
 
         return name;
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type)
+    {
+        if (CraftyConcoctions.DEBUG)
+            getDebugTooltip(stack, tooltip);
+        super.appendTooltip(stack, context, tooltip, type);
+    }
+
+    private void getDebugTooltip(ItemStack stack, List<Text> tooltipOutput)
+    {
+        if (!stack.contains(DataComponentTypes.FOOD)) return;
+        FoodComponent foodComponent = stack.get(DataComponentTypes.FOOD);
+        if (foodComponent.effects().isEmpty()) return;
+
+        for (FoodComponent.StatusEffectEntry entry : foodComponent.effects())
+        {
+            StatusEffectInstance effect = entry.effect();
+            tooltipOutput.add(Text.translatable(effect.getTranslationKey()).append(Text.of(" " + effect.getAmplifier() + " " + effect.getDuration())));
+        }
     }
 }
