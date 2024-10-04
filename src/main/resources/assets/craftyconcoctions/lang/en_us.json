@@ -14,5 +14,9 @@
   "item.craftyconcoctions.potion_type.mundane": "Mundane",
   "item.craftyconcoctions.potion_type.awkward": "Awkward",
   "item.craftyconcoctions.potion_type.thick": "Thick",
-  "item.craftyconcoctions.potion_type.diluted": "Diluted"
+  "item.craftyconcoctions.potion_type.diluted": "Diluted",
+
+  "item.craftyconcoctions.clover_leaves_2": "Two-Leaf Clover",
+  "item.craftyconcoctions.clover_leaves_3": "Three-Leaf Clover",
+  "item.craftyconcoctions.clover_leaves_4": "Four-Leaf Clover"
 }

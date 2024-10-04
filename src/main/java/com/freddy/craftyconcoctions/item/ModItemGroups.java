@@ -19,6 +19,12 @@ public class ModItemGroups
         crafty_concoctions_group = Registry.register(Registries.ITEM_GROUP,
                 Identifier.of(CraftyConcoctions.MOD_ID, "crafty_concoctions_group"),
                 FabricItemGroup.builder().displayName(Text.translatable("itemgroup.crafty_concoctions_group"))
-                        .icon(() -> new ItemStack(ModBlocks.WITCH_CAULDRON)).entries((displayContext, entries) -> entries.add(new ItemStack(ModBlocks.WITCH_CAULDRON))).build());
+                        .icon(() -> new ItemStack(ModBlocks.WITCH_CAULDRON)).entries((displayContext, entries) -> {
+                            entries.add(new ItemStack(ModBlocks.WITCH_CAULDRON));
+                            entries.add(new ItemStack(ModItems.CLOVER_LEAVES_2));
+                            entries.add(new ItemStack(ModItems.CLOVER_LEAVES_3));
+                            entries.add(new ItemStack(ModItems.CLOVER_LEAVES_4));
+
+                        }).build());
     }
 }

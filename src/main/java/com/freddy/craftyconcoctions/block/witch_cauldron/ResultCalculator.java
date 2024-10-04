@@ -182,10 +182,6 @@ public class ResultCalculator
         return nbt;
     }
 
-    /*
-        Durations are values for no redstone input
-        Amplifiers are values for 1 glowstone input (no glowstone will always be level 1)
-     */
     private static final List<Pair<EffectData, EffectData>> effectPairs = Arrays.asList(
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.SPEED, 20 * 180, 1), 2, Collections.singletonList(Items.SUGAR), new Color(51, 235, 255)),
                     new EffectData(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * 90, 1), 4, Collections.singletonList(Items.TURTLE_SCUTE), new Color(139, 175, 224))),
@@ -205,10 +201,10 @@ public class ResultCalculator
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.WATER_BREATHING, 20 * 90, 1), 1, Collections.singletonList(Items.FERMENTED_SPIDER_EYE), new Color(152, 218, 192)),
                     new EffectData(new StatusEffectInstance(ModEffects.BREATHLESSNESS, 20 * 45, 1), 3, Collections.singletonList(Items.ENDER_PEARL), new Color(77, 191, 146))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.INVISIBILITY, 20 * 180, 1), 1, Collections.singletonList(Items.LIGHT_GRAY_STAINED_GLASS_PANE), new Color(246, 246, 246)),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.INVISIBILITY, 20 * 180, 1), 1, Collections.singletonList(Items.AMETHYST_SHARD), new Color(246, 246, 246)),
                     new EffectData(new StatusEffectInstance(StatusEffects.GLOWING, 20 * 120, 1), 1, Collections.singletonList(Items.GLOW_BERRIES), new Color(148, 160, 97))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 20 * 180, 1), 1, Collections.singletonList(Items.GLOW_INK_SAC), new Color(194, 255, 102)),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 20 * 180, 1), 1, Collections.singletonList(Items.SHROOMLIGHT), new Color(194, 255, 102)),
                     new EffectData(new StatusEffectInstance(StatusEffects.BLINDNESS, 20 * 45, 1), 1, Collections.singletonList(Items.SPIDER_EYE), new Color(31, 31, 35))),
 
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.SATURATION, 20 * 180, 1), 2, Collections.singletonList(Items.GOLDEN_CARROT), new Color(248, 36, 35)),
@@ -217,8 +213,8 @@ public class ResultCalculator
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.LEVITATION, 20 * 30, 1), 2, Collections.singletonList(Items.SHULKER_SHELL), new Color(206, 255, 255)),
                     new EffectData(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 20 * 90, 1), 1, Collections.singletonList(Items.FEATHER), new Color(243, 207, 185))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.LUCK, 20 * 300, 1), 1, Collections.singletonList(Items.FERMENTED_SPIDER_EYE), new Color(89, 193, 6)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.UNLUCK, 20 * 300, 1), 1, Collections.singletonList(Items.FERMENTED_SPIDER_EYE), new Color(192, 164, 77))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.LUCK, 20 * 600, 1), 1, Collections.singletonList(ModItems.CLOVER_LEAVES_2), new Color(89, 193, 6)),
+                    new EffectData(new StatusEffectInstance(StatusEffects.UNLUCK, 20 * 600, 1), 1, Collections.singletonList(ModItems.CLOVER_LEAVES_4), new Color(192, 164, 77))),
 
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.OOZING, 20 * 180, 1), 1, Collections.singletonList(Items.SLIME_BALL), new Color(153, 255, 163)),
                     new EffectData(new StatusEffectInstance(StatusEffects.INFESTED, 20 * 180, 1), 1, Collections.singletonList(Items.STONE), new Color(140, 155, 140))),

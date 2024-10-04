@@ -11,6 +11,9 @@ public class ModItems
     public static void register() {}
 
     public static final Item WITCH_POTION = registerItem("witch_potion", new WitchPotionItem(new Item.Settings().maxCount(1)));
+    public static final Item CLOVER_LEAVES_2 = registerItem("clover_leaves_2", new Item(new Item.Settings()));
+    public static final Item CLOVER_LEAVES_3 = registerItem("clover_leaves_3", new Item(new Item.Settings()));
+    public static final Item CLOVER_LEAVES_4 = registerItem("clover_leaves_4", new Item(new Item.Settings()));
 
     public static Item registerItem(String name, Item item)
     {
