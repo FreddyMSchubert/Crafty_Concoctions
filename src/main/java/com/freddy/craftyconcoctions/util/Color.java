@@ -128,6 +128,9 @@ public class Color
             alpha += color.ALPHA;
         }
 
+        if (colors.isEmpty())
+            return new Color(255, 255, 255, 255);
+
         return new Color(red / colors.size(), green / colors.size(), blue / colors.size(), alpha / colors.size());
     }
 

@@ -1,6 +1,7 @@
 package com.freddy.craftyconcoctions.item;
 
 import com.freddy.craftyconcoctions.CraftyConcoctions;
+import com.freddy.craftyconcoctions.block.witch_cauldron.WitchCauldronSettings;
 import com.freddy.craftyconcoctions.util.ModDataComponentTypes;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FoodComponent;
@@ -8,13 +9,18 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.UseAction;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WitchPotionItem extends Item
 {
@@ -77,5 +83,24 @@ public class WitchPotionItem extends Item
             StatusEffectInstance effect = entry.effect();
             tooltipOutput.add(Text.translatable(effect.getTranslationKey()).append(Text.of(" " + effect.getAmplifier() + " " + effect.getDuration())));
         }
+
+        if (!stack.contains(ModDataComponentTypes.POTION_INGREDIENTS)) return;
+        NbtCompound ingredients = stack.get(ModDataComponentTypes.POTION_INGREDIENTS);
+        Map<Item, Integer> items = new HashMap<>();
+        for (int i = 0; i < WitchCauldronSettings.MAX_INGREDIENTS; i++)
+        {
+            if (ingredients.contains("ingredient" + i))
+            {
+                Item item = Registries.ITEM.get(Identifier.of(ingredients.getString("ingredient" + i)));
+                if (items.containsKey(item))
+                    items.put(item, items.get(item) + 1);
+                else
+                    items.put(item, 1);
+            }
+            else
+                break;
+        }
+        for (Map.Entry<Item, Integer> entry : items.entrySet())
+            tooltipOutput.add(Text.of(entry.getValue() + "x " + entry.getKey().getName().getString()));
     }
 }
