@@ -34,6 +34,7 @@ public class WitchCauldronBlockEntityRenderer implements BlockEntityRenderer<Wit
             new ItemDisplayProperties(0.125f + pixel, 0f, 0.5f, -22.5f, 270f, 0f), // West side
     };
 
+    @SuppressWarnings("unused")
     public WitchCauldronBlockEntityRenderer(BlockEntityRendererFactory.Context context) {}
 
     @Override
@@ -51,10 +52,20 @@ public class WitchCauldronBlockEntityRenderer implements BlockEntityRenderer<Wit
         Matrix4f matrixPos = matrices.peek().getPositionMatrix();
         MatrixStack.Entry entry = matrices.peek();
 
-        vertexConsumer.vertex(matrixPos, -0.5f, 0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, entity.currColor.ALPHA).texture(0.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
-        vertexConsumer.vertex(matrixPos, 0.5f, 0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, entity.currColor.ALPHA).texture(1.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
-        vertexConsumer.vertex(matrixPos, 0.5f, -0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, entity.currColor.ALPHA).texture(1.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
-        vertexConsumer.vertex(matrixPos, -0.5f, -0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, entity.currColor.ALPHA).texture(0.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        int alpha = entity.currColor.ALPHA;
+        if (entity.mode == 2)
+        {
+            int halfDuration = WitchCauldronSettings.BREWING_MODE_DURATION_TICKS / 2;
+            if (entity.ticksSinceModeSwitch <= halfDuration)
+                alpha = (int) getLinearAt(entity.ticksSinceModeSwitch, halfDuration, entity.currColor.ALPHA, 255);
+            else
+                alpha = (int) getLinearAt(entity.ticksSinceModeSwitch - halfDuration, halfDuration, 255, entity.currColor.ALPHA);
+        }
+
+        vertexConsumer.vertex(matrixPos, -0.5f, 0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, alpha).texture(0.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        vertexConsumer.vertex(matrixPos, 0.5f, 0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, alpha).texture(1.0f, 0.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        vertexConsumer.vertex(matrixPos, 0.5f, -0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, alpha).texture(1.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
+        vertexConsumer.vertex(matrixPos, -0.5f, -0.5f, 0.0f).color(entity.currColor.RED, entity.currColor.GREEN, entity.currColor.BLUE, alpha).texture(0.0f, 1.0f).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(entry, 0.0f, 1.0f, 0.0f);
 
         matrices.pop();
 
@@ -120,5 +131,11 @@ public class WitchCauldronBlockEntityRenderer implements BlockEntityRenderer<Wit
         double angle = Math.PI * 2 * tick / (double) animationLength - Math.PI / 2;
 
         return amplitude * Math.sin(angle) + verticalShift;
+    }
+
+    public static double getLinearAt(int tick, int animationLength, double minHeight, double maxHeight)
+    {
+        double slope = (maxHeight - minHeight) / (double) animationLength;
+        return slope * tick + minHeight;
     }
 }
