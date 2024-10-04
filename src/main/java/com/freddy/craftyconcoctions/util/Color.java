@@ -82,17 +82,19 @@ public class Color
 
     public void shiftColorTowardsColor(Color target, int amount)
     {
+        CraftyConcoctions.LOGGER.info("Shifting color " + RED + "|" + GREEN + "|" + BLUE + "|" + ALPHA + " towards " + target.RED + "|" + target.GREEN + "|" + target.BLUE + "|" + target.ALPHA + " by " + amount);
         RED = shiftColorTowardsValue(RED, target.RED, amount);
         GREEN = shiftColorTowardsValue(GREEN, target.GREEN, amount);
         BLUE = shiftColorTowardsValue(BLUE, target.BLUE, amount);
         ALPHA = shiftColorTowardsValue(ALPHA, target.ALPHA, amount);
+        CraftyConcoctions.LOGGER.info("Result: " + RED + "|" + GREEN + "|" + BLUE + "|" + ALPHA);
     }
     private int shiftColorTowardsValue(int current, int target, int amount)
     {
-        if (current < target)
-            return Math.min(current + amount, target);
-        else
-            return Math.max(current - amount, target);
+        int difference = target - current;
+        if (Math.abs(difference) <= amount)
+            return target;
+        return current + (int) Math.signum(difference) * amount;
     }
 
     public static Color blendColors(Color... colors)

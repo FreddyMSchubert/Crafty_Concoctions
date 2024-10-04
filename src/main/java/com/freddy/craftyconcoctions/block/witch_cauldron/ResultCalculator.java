@@ -4,6 +4,7 @@ import com.freddy.craftyconcoctions.effect.ModEffects;
 import com.freddy.craftyconcoctions.item.ModItemTags;
 import com.freddy.craftyconcoctions.item.ModItems;
 import com.freddy.craftyconcoctions.util.Color;
+import com.freddy.craftyconcoctions.util.MathUtil;
 import com.freddy.craftyconcoctions.util.ModDataComponentTypes;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FoodComponent;
@@ -136,17 +137,14 @@ public class ResultCalculator
 
                 // color
 
-                int assumedDuration = effect.getDuration() * 2;
-                int assumedAmplifier = Math.round((float) maxAmplifier / 2);
-
-                float durationFactor = Math.min(1.0f, (float) duration / assumedDuration);
-                float amplifierFactor = Math.min(1.0f, (float) amplifier / assumedAmplifier);
-                float powerFactor = (durationFactor + amplifierFactor) / 2.0f;
+                int colorStrength = modifiers.size();
+                int colorStrengthImpact = 50;
+                int expectedColorStrength = 1;
 
                 Color newColor = effectColor.copy();
-                newColor.red((int) (newColor.RED + (255 - newColor.RED) * powerFactor));
-                newColor.green((int) (newColor.GREEN + (255 - newColor.GREEN) * powerFactor));
-                newColor.blue((int) (newColor.BLUE + (255 - newColor.BLUE) * powerFactor));
+                newColor.red(MathUtil.clamp(newColor.RED + (expectedColorStrength - colorStrength) * colorStrengthImpact, 0, 255));
+                newColor.green(MathUtil.clamp(newColor.GREEN + (expectedColorStrength - colorStrength) * colorStrengthImpact, 0, 255));
+                newColor.blue(MathUtil.clamp(newColor.BLUE + (expectedColorStrength - colorStrength) * colorStrengthImpact, 0, 255));
                 colors.add(newColor);
             }
         }
