@@ -20,6 +20,8 @@ public class BreathlessnessStatusEffect extends StatusEffect
     @Override
     public boolean applyUpdateEffect(LivingEntity entity, int amplifier)
     {
+        if (entity.isSubmergedInWater())
+            entity.setAir(entity.getAir() - (1 + amplifier));
         return super.applyUpdateEffect(entity, amplifier);
     }
 }

@@ -14,6 +14,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.TagKey;
 import oshi.util.tuples.Pair;
 
 import java.util.*;
@@ -28,7 +31,7 @@ public class ResultCalculator
         boolean isGoodPotion;
         boolean isBadPotion;
         boolean isStrongPotion;
-        boolean isMundanePotion = false;
+        boolean isMundanePotion;
         boolean isAwkwardPotion = false;
         boolean isThickPotion = false;
         boolean isDilutedPotion = false;
@@ -74,9 +77,7 @@ public class ResultCalculator
         }
         isGoodPotion = goodness > 0;
         isBadPotion = goodness < 0;
-
-        if (goodness == 0)
-            isMundanePotion = true;
+        isMundanePotion = goodness == 0;
 
         // Missing potion definers or goodness definers prefixes
 
@@ -141,7 +142,7 @@ public class ResultCalculator
                 // color
 
                 int colorStrength = modifiers.size();
-                int colorStrengthImpact = 50;
+                int colorStrengthImpact = 35;
                 int expectedColorStrength = 1;
 
                 Color newColor = effectColor.copy();
@@ -187,44 +188,44 @@ public class ResultCalculator
     }
 
     private static final List<Pair<EffectData, EffectData>> effectPairs = Arrays.asList(
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.SPEED, 20 * 180, 1), 2, Collections.singletonList(Items.SUGAR), new Color(51, 235, 255)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * 90, 1), 4, Collections.singletonList(Items.TURTLE_SCUTE), new Color(139, 175, 224))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.SPEED, 20 * 180, 1), 2, Items.SUGAR, new Color(51, 235, 255)),
+                    new EffectData(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * 90, 1), 4, Items.TURTLE_SCUTE, new Color(139, 175, 224))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.STRENGTH, 20 * 180, 1), 2, Collections.singletonList(Items.BLAZE_POWDER), new Color(255, 199, 9)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.WEAKNESS, 20 * 90, 1), 1, Collections.singletonList(Items.FERMENTED_SPIDER_EYE), new Color(72, 77, 72))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.STRENGTH, 20 * 180, 1), 2, Items.BLAZE_POWDER, new Color(255, 199, 9)),
+                    new EffectData(new StatusEffectInstance(StatusEffects.WEAKNESS, 20 * 90, 1), 1, Items.AIR, new Color(72, 77, 72))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 20 * 180, 1), 4, Collections.singletonList(Items.RABBIT_FOOT), new Color(253, 255, 132)),
-                    new EffectData(new StatusEffectInstance(ModEffects.JUMP_REDUCTION, 20 * 90, 1), 2, Collections.singletonList(Items.FERMENTED_SPIDER_EYE), new Color(251, 30, 255))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 20 * 180, 1), 4, Items.RABBIT_FOOT, new Color(253, 255, 132)),
+                    new EffectData(new StatusEffectInstance(ModEffects.JUMP_REDUCTION, 20 * 90, 1), 2, Items.AIR, new Color(251, 30, 255))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.REGENERATION, 20 * 45, 1), 2, Collections.singletonList(Items.GHAST_TEAR), new Color(205, 92, 171)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.POISON, 20 * 45, 1), 2, Collections.singletonList(Items.PUFFERFISH), new Color(135, 163, 99))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.REGENERATION, 20 * 45, 1), 2, Items.GHAST_TEAR, new Color(205, 92, 171)),
+                    new EffectData(new StatusEffectInstance(StatusEffects.POISON, 20 * 45, 1), 2, List.of(Items.PUFFERFISH, Items.POISONOUS_POTATO), new Color(135, 163, 99))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 20 * 180, 1), 1, Collections.singletonList(Items.MAGMA_CREAM), new Color(255, 153, 0)),
-                    new EffectData(new StatusEffectInstance(ModEffects.FIRE_WEAKNESS, 20 * 90, 1), 2, Collections.singletonList(Items.PAPER), new Color(153, 92, 0))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 20 * 180, 1), 1, Items.MAGMA_CREAM, new Color(255, 153, 0)),
+                    new EffectData(new StatusEffectInstance(ModEffects.FIRE_WEAKNESS, 20 * 90, 1), 2, Items.PAPER, new Color(153, 92, 0))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.WATER_BREATHING, 20 * 90, 1), 1, Collections.singletonList(Items.FERMENTED_SPIDER_EYE), new Color(152, 218, 192)),
-                    new EffectData(new StatusEffectInstance(ModEffects.BREATHLESSNESS, 20 * 45, 1), 3, Collections.singletonList(Items.ENDER_PEARL), new Color(77, 191, 146))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.WATER_BREATHING, 20 * 90, 1), 1, ItemTags.FISHES, new Color(152, 218, 192)),
+                    new EffectData(new StatusEffectInstance(ModEffects.BREATHLESSNESS, 20 * 45, 1), 1, Items.ENDER_PEARL, new Color(77, 191, 146))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.INVISIBILITY, 20 * 180, 1), 1, Collections.singletonList(Items.AMETHYST_SHARD), new Color(246, 246, 246)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.GLOWING, 20 * 120, 1), 1, Collections.singletonList(Items.GLOW_BERRIES), new Color(148, 160, 97))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.INVISIBILITY, 20 * 180, 1), 1, Items.AMETHYST_SHARD, new Color(246, 246, 246)),
+                    new EffectData(new StatusEffectInstance(StatusEffects.GLOWING, 20 * 120, 1), 1, Items.GLOW_BERRIES, new Color(148, 160, 97))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 20 * 180, 1), 1, Collections.singletonList(Items.SHROOMLIGHT), new Color(194, 255, 102)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.BLINDNESS, 20 * 45, 1), 1, Collections.singletonList(Items.SPIDER_EYE), new Color(31, 31, 35))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 20 * 180, 1), 1, Items.SHROOMLIGHT, new Color(194, 255, 102)),
+                    new EffectData(new StatusEffectInstance(StatusEffects.BLINDNESS, 20 * 45, 1), 1, Items.SPIDER_EYE, new Color(31, 31, 35))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.SATURATION, 20 * 180, 1), 2, Collections.singletonList(Items.GOLDEN_CARROT), new Color(248, 36, 35)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.HUNGER, 20 * 45, 1), 1, Collections.singletonList(Items.ROTTEN_FLESH), new Color(88, 118, 83))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.SATURATION, 20 * 180, 1), 2, Items.GOLDEN_CARROT, new Color(248, 36, 35)),
+                    new EffectData(new StatusEffectInstance(StatusEffects.HUNGER, 20 * 45, 1), 1, Items.ROTTEN_FLESH, new Color(88, 118, 83))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.LEVITATION, 20 * 30, 1), 2, Collections.singletonList(Items.SHULKER_SHELL), new Color(206, 255, 255)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 20 * 90, 1), 1, Collections.singletonList(Items.FEATHER), new Color(243, 207, 185))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.LEVITATION, 20 * 30, 1), 2, Items.SHULKER_SHELL, new Color(206, 255, 255)),
+                    new EffectData(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 20 * 90, 1), 1, Items.FEATHER, new Color(243, 207, 185))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.LUCK, 20 * 600, 1), 1, Collections.singletonList(ModItems.CLOVER_LEAVES_2), new Color(89, 193, 6)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.UNLUCK, 20 * 600, 1), 1, Collections.singletonList(ModItems.CLOVER_LEAVES_4), new Color(192, 164, 77))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.LUCK, 20 * 600, 1), 1, ModItems.CLOVER_LEAVES_2, new Color(89, 193, 6)),
+                    new EffectData(new StatusEffectInstance(StatusEffects.UNLUCK, 20 * 600, 1), 1, ModItems.CLOVER_LEAVES_4, new Color(192, 164, 77))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.OOZING, 20 * 180, 1), 1, Collections.singletonList(Items.SLIME_BALL), new Color(153, 255, 163)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.INFESTED, 20 * 180, 1), 1, Collections.singletonList(Items.STONE), new Color(140, 155, 140))),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.OOZING, 20 * 180, 1), 1, Items.SLIME_BALL, new Color(153, 255, 163)),
+                    new EffectData(new StatusEffectInstance(StatusEffects.INFESTED, 20 * 180, 1), 1, Items.STONE, new Color(140, 155, 140))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.WIND_CHARGED, 20 * 180, 1), 1, Collections.singletonList(Items.WIND_CHARGE), new Color(198, 201, 255)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.WEAVING, 20 * 180, 1), 1, Collections.singletonList(Items.COBWEB), new Color(120, 105, 90)))
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.WIND_CHARGED, 20 * 180, 1), 1, Items.WIND_CHARGE, new Color(198, 201, 255)),
+                    new EffectData(new StatusEffectInstance(StatusEffects.WEAVING, 20 * 180, 1), 1, Items.COBWEB, new Color(120, 105, 90)))
     );
 
     public static class ResultCalculatorOutput
@@ -234,7 +235,6 @@ public class ResultCalculator
 
         ResultCalculatorOutput(ItemStack output, Color color)
         {
-            // CraftyConcoctions.LOGGER.info("ResultCalculatorOutput: {} - {}; {}", output, color.getRGBA(), output.getComponents());
             this.output = output;
             this.color = color;
         }
@@ -246,6 +246,26 @@ public class ResultCalculator
         int maxAmplifier;
         List<Item> item;
         Color color;
+
+        EffectData(StatusEffectInstance effect, int maxAmplifier, Item item, Color color)
+        {
+            this.effect = effect;
+            this.maxAmplifier = maxAmplifier;
+            this.item = new ArrayList<>();
+            this.item.add(item);
+            this.color = color;
+        }
+
+        EffectData(StatusEffectInstance effect, int maxAmplifier, TagKey<Item> tag, Color color)
+        {
+            this.effect = effect;
+            this.maxAmplifier = maxAmplifier;
+            this.item = new ArrayList<>();
+            for (Item item : Registries.ITEM.stream().toList())
+                if (item.getDefaultStack().isIn(tag))
+                    this.item.add(item);
+            this.color = color;
+        }
 
         EffectData(StatusEffectInstance effect, int maxAmplifier, List<Item> item, Color color)
         {
