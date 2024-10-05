@@ -27,6 +27,7 @@ public class ResultCalculator
 
         boolean isGoodPotion;
         boolean isBadPotion;
+        boolean isStrongPotion;
         boolean isMundanePotion = false;
         boolean isAwkwardPotion = false;
         boolean isThickPotion = false;
@@ -46,6 +47,8 @@ public class ResultCalculator
                 break;
             }
         }
+
+        isStrongPotion = !modifiers.isEmpty();
 
         // Store effect modifier counts
 
@@ -88,7 +91,7 @@ public class ResultCalculator
             if (goodnessDefiners.isEmpty())
                 isThickPotion = true;
 
-            return getResult(food, color, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion);
+            return getResult(food, color, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
         }
 
         // Determine effects
@@ -104,13 +107,13 @@ public class ResultCalculator
                 Color effectColor;
                 int maxAmplifier;
 
-                if (isGoodPotion && pair.getA().item.contains(potionDefiner))
+                if (isGoodPotion && pair.getA().item.contains(potionDefiner) || isBadPotion && pair.getB().item.contains(potionDefiner))
                 {
                     effect = pair.getA().effect;
                     effectColor = pair.getA().color;
                     maxAmplifier = pair.getA().maxAmplifier;
                 }
-                else if (isBadPotion && pair.getB().item.contains(potionDefiner))
+                else if (isGoodPotion && pair.getB().item.contains(potionDefiner) || isBadPotion && pair.getA().item.contains(potionDefiner))
                 {
                     effect = pair.getB().effect;
                     effectColor = pair.getB().color;
@@ -155,10 +158,10 @@ public class ResultCalculator
             food.effects().add(new FoodComponent.StatusEffectEntry(instance, 1f));
         color = Color.blendColors(colors);
 
-        return getResult(food, color, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion);
+        return getResult(food, color, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
     }
 
-    public static ResultCalculatorOutput getResult(FoodComponent food, Color color, List<Item> ingredients, boolean good, boolean bad, boolean mundane, boolean awkward, boolean thick, boolean diluted)
+    public static ResultCalculatorOutput getResult(FoodComponent food, Color color, List<Item> ingredients, boolean good, boolean bad, boolean mundane, boolean awkward, boolean thick, boolean diluted, boolean strong)
     {
         ItemStack stack = new ItemStack(ModItems.WITCH_POTION);
         color.alpha(150);
@@ -170,6 +173,7 @@ public class ResultCalculator
         stack.set(ModDataComponentTypes.AWKWARD_POTION, awkward);
         stack.set(ModDataComponentTypes.THICK_POTION, thick);
         stack.set(ModDataComponentTypes.DILUTED_POTION, diluted);
+        stack.set(ModDataComponentTypes.STRONG_POTION, strong);
         stack.set(ModDataComponentTypes.POTION_INGREDIENTS, getIngredientsAsNbtCompound(ingredients));
         return new ResultCalculatorOutput(stack, color);
     }
