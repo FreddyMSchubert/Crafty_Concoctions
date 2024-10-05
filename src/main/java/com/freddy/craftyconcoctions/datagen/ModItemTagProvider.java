@@ -18,9 +18,14 @@ public class ModItemTagProvider extends FabricTagProvider.ItemTagProvider
     @Override
     protected void configure(RegistryWrapper.WrapperLookup wrapperLookup)
     {
+        // please check there isnt too much in here not actually used anymore
         getOrCreateTagBuilder(ModItemTags.POTION_DEFINERS)
                 .add(Items.SPIDER_EYE)
                 .add(Items.SUGAR)
+                .add(Items.TURTLE_SCUTE)
+                .add(Items.GHAST_TEAR)
+                .add(Items.PAPER)
+                .add(Items.ENDER_PEARL)
                 .add(Items.RABBIT_FOOT)
                 .add(Items.BLAZE_POWDER)
                 .add(Items.GLISTERING_MELON_SLICE)

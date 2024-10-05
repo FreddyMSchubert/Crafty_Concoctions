@@ -84,7 +84,7 @@ public class WitchPotionItem extends Item
         for (FoodComponent.StatusEffectEntry entry : foodComponent.effects())
         {
             StatusEffectInstance effect = entry.effect();
-            tooltipOutput.add(Text.translatable(effect.getTranslationKey()).append(Text.of(" " + effect.getAmplifier() + " " + effect.getDuration())));
+            tooltipOutput.add(Text.translatable(effect.getTranslationKey()).append(Text.of(" " + (effect.getAmplifier() + 1) + " " + effect.getDuration())));
         }
 
         if (!stack.contains(ModDataComponentTypes.POTION_INGREDIENTS)) return;
