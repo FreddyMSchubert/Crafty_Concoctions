@@ -19,5 +19,9 @@
 
   "item.craftyconcoctions.clover_leaves_2": "Two-Leaf Clover",
   "item.craftyconcoctions.clover_leaves_3": "Three-Leaf Clover",
-  "item.craftyconcoctions.clover_leaves_4": "Four-Leaf Clover"
+  "item.craftyconcoctions.clover_leaves_4": "Four-Leaf Clover",
+
+  "effect.craftyconcoctions.jump_reduction": "Jump Reduction",
+  "effect.craftyconcoctions.fire_weakness": "Fire Weakness",
+  "effect.craftyconcoctions.breathlessness": "Breathlessness"
 }

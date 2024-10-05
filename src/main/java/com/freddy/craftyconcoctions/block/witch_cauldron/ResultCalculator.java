@@ -135,7 +135,7 @@ public class ResultCalculator
                 else
                     amplifier = 1;
 
-                StatusEffectInstance newEffect = new StatusEffectInstance(effect.getEffectType(), duration, amplifier);
+                StatusEffectInstance newEffect = new StatusEffectInstance(effect.getEffectType(), duration, amplifier - 1);
                 effects.add(newEffect);
 
                 // color

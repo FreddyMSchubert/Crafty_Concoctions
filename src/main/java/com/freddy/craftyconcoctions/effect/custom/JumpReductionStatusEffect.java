@@ -9,4 +9,10 @@ public class JumpReductionStatusEffect extends StatusEffect
     {
         super(category, color);
     }
+
+    @Override
+    public boolean canApplyUpdateEffect(int duration, int amplifier)
+    {
+        return true;
+    }
 }
