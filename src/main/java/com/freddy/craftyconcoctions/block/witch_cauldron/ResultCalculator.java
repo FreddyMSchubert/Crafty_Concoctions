@@ -225,7 +225,10 @@ public class ResultCalculator
                     new EffectData(new StatusEffectInstance(StatusEffects.INFESTED, 20 * 180, 1), 1, Items.STONE, new Color(140, 155, 140))),
 
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.WIND_CHARGED, 20 * 180, 1), 1, Items.WIND_CHARGE, new Color(198, 201, 255)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.WEAVING, 20 * 180, 1), 1, Items.COBWEB, new Color(120, 105, 90)))
+                    new EffectData(new StatusEffectInstance(StatusEffects.WEAVING, 20 * 180, 1), 1, Items.COBWEB, new Color(120, 105, 90))),
+
+            new Pair<>(new EffectData(new StatusEffectInstance(ModEffects.DWARF, 20 * 180, 1), 1, List.of(Items.BROWN_MUSHROOM, Items.RED_MUSHROOM), new Color(207, 179, 168)),
+                    new EffectData(new StatusEffectInstance(ModEffects.GIANT, 20 * 90, 1), 1, List.of(Items.BROWN_MUSHROOM_BLOCK, Items.RED_MUSHROOM_BLOCK), new Color(194, 126, 99)))
     );
 
     public static class ResultCalculatorOutput
