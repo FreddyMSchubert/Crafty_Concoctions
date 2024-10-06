@@ -164,7 +164,7 @@ public class ResultCalculator
 
     public static ResultCalculatorOutput getResult(FoodComponent food, Color color, List<Item> ingredients, boolean good, boolean bad, boolean mundane, boolean awkward, boolean thick, boolean diluted, boolean strong)
     {
-        ItemStack stack = new ItemStack(ModItems.WITCH_POTION);
+        ItemStack stack = new ItemStack(Items.POTION);
         color.alpha(150);
         stack.set(DataComponentTypes.FOOD, food);
         stack.set(ModDataComponentTypes.POTION_COLOR, color.getArgbInt());
