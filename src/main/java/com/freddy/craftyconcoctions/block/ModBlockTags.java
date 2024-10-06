@@ -9,8 +9,10 @@ import net.minecraft.util.Identifier;
 public class ModBlockTags
 {
     // utilities
-    public static final TagKey<Block> HEATING_BLOCKS =
-            createTag("heating_blocks");
+    public static final TagKey<Block> HEATING_BLOCKS_LVL_2 =
+            createTag("heating_blocks_lvl_2");
+    public static final TagKey<Block> HEATING_BLOCKS_LVL_1 =
+            createTag("heating_blocks_lvl_1");
 
     private static TagKey<Block> createTag(String name)
     {

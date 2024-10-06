@@ -19,12 +19,17 @@ public class ModBlockTagProvider extends FabricTagProvider.BlockTagProvider
     public void configure(RegistryWrapper.WrapperLookup wrapperLookup)
     {
         // Utilities
-        getOrCreateTagBuilder(ModBlockTags.HEATING_BLOCKS)
-                .add(Blocks.MAGMA_BLOCK)
-                .add(Blocks.LAVA)
-                .add(Blocks.FIRE)
+        getOrCreateTagBuilder(ModBlockTags.HEATING_BLOCKS_LVL_2)
+                .add(Blocks.SOUL_CAMPFIRE)
                 .add(Blocks.SOUL_FIRE)
+                .add(Blocks.SOUL_TORCH)
+                .add(Blocks.SOUL_WALL_TORCH);
+        getOrCreateTagBuilder(ModBlockTags.HEATING_BLOCKS_LVL_1)
                 .add(Blocks.CAMPFIRE)
-                .add(Blocks.SOUL_CAMPFIRE);
+                .add(Blocks.FIRE)
+                .add(Blocks.LAVA)
+                .add(Blocks.MAGMA_BLOCK)
+                .add(Blocks.TORCH)
+                .add(Blocks.WALL_TORCH);
     }
 }

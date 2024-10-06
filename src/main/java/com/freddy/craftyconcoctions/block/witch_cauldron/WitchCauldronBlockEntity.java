@@ -11,6 +11,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.mob.BlazeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -128,7 +129,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
                     attemptToPickUpIngredient();
                 break;
             case 1:
-                if (isHeated(pos, world))
+                if (getHeatLevel(pos, world) >= waterAmount)
                 {
                     mode = 2;
                     ticksSinceModeSwitch = 0;
@@ -178,7 +179,7 @@ public class WitchCauldronBlockEntity extends BlockEntity
     // returns whether an interaction occurred
     public boolean onUse(PlayerEntity player)
     {
-        if (world.isClient())
+        if (world == null || world.isClient())
             return false;
 
         boolean interactionOccurred = false;
@@ -325,11 +326,23 @@ public class WitchCauldronBlockEntity extends BlockEntity
             world.setBlockState(pos, Blocks.WATER.getDefaultState());
     }
 
-    public boolean isHeated(BlockPos pos, World world)
+    private int getHeatLevel(BlockPos pos, World world)
     {
-        BlockPos belowPos = pos.down();
-        BlockState belowState = world.getBlockState(belowPos);
-        return belowState.isIn(ModBlockTags.HEATING_BLOCKS);
+        // Level 3
+        Box areaToCheck = new Box(pos.getX() - 3, pos.getY() - 3, pos.getZ() - 3, pos.getX() + 4, pos.getY() + 4, pos.getZ() + 4);
+        if (!world.getEntitiesByClass(BlazeEntity.class, areaToCheck, entity -> true).isEmpty())
+            return 3;
+
+        // Level 2
+        BlockState belowBlock = world.getBlockState(pos.down());
+        if (belowBlock.isIn(ModBlockTags.HEATING_BLOCKS_LVL_2))
+            return 2;
+
+        // Level 1
+        if (belowBlock.isIn(ModBlockTags.HEATING_BLOCKS_LVL_1))
+            return 1;
+
+        return 0;
     }
 
     public int getColorShiftSpeed()
