@@ -4,6 +4,5 @@ public enum PotionType
 {
     POTION,
     SPLASH_POTION,
-    LINGERING_POTION,
-    TIPPED_ARROW
+    LINGERING_POTION
 }

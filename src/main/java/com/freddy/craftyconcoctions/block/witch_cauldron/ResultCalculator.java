@@ -1,5 +1,6 @@
 package com.freddy.craftyconcoctions.block.witch_cauldron;
 
+import com.freddy.craftyconcoctions.CraftyConcoctions;
 import com.freddy.craftyconcoctions.effect.ModEffects;
 import com.freddy.craftyconcoctions.item.ModItemTags;
 import com.freddy.craftyconcoctions.item.ModItems;
@@ -8,6 +9,7 @@ import com.freddy.craftyconcoctions.util.MathUtil;
 import com.freddy.craftyconcoctions.util.ModDataComponentTypes;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FoodComponent;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.Item;
@@ -20,6 +22,7 @@ import net.minecraft.registry.tag.TagKey;
 import oshi.util.tuples.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ResultCalculator
 {
@@ -27,6 +30,7 @@ public class ResultCalculator
     {
         FoodComponent food = new FoodComponent(0, 0f, true, 2f, Optional.ofNullable(Items.GLASS_BOTTLE.getDefaultStack()), new ArrayList<>());
         Color color;
+        PotionType type = PotionType.POTION;
 
         boolean isGoodPotion;
         boolean isBadPotion;
@@ -53,7 +57,7 @@ public class ResultCalculator
 
         isStrongPotion = !modifiers.isEmpty();
 
-        // Store effect modifier counts
+        // Modifier effects
 
         int redstoneCount = 0;
         int glowstoneCount = 0;
@@ -63,6 +67,10 @@ public class ResultCalculator
                 redstoneCount++;
             else if (item == Items.GLOWSTONE_DUST)
                 glowstoneCount++;
+            else if (item == Items.GUNPOWDER)
+                type = PotionType.SPLASH_POTION;
+            else if (item == Items.DRAGON_BREATH)
+                type = PotionType.LINGERING_POTION;
         }
 
         // Determine goodness
@@ -92,7 +100,7 @@ public class ResultCalculator
             if (goodnessDefiners.isEmpty())
                 isThickPotion = true;
 
-            return getResult(food, color, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
+            return getResult(food, color, type, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
         }
 
         // Determine effects
@@ -159,12 +167,26 @@ public class ResultCalculator
             food.effects().add(new FoodComponent.StatusEffectEntry(instance, 1f));
         color = Color.blendColors(colors);
 
-        return getResult(food, color, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
+        return getResult(food, color, type, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
     }
 
-    public static ResultCalculatorOutput getResult(FoodComponent food, Color color, List<Item> ingredients, boolean good, boolean bad, boolean mundane, boolean awkward, boolean thick, boolean diluted, boolean strong)
+    public static ResultCalculatorOutput getResult(FoodComponent food, Color color, PotionType type, List<Item> ingredients, boolean good, boolean bad, boolean mundane, boolean awkward, boolean thick, boolean diluted, boolean strong)
     {
         ItemStack stack = new ItemStack(Items.POTION);
+        if (type == PotionType.SPLASH_POTION)
+            stack = new ItemStack(Items.SPLASH_POTION);
+        else if (type == PotionType.LINGERING_POTION)
+            stack = new ItemStack(Items.LINGERING_POTION);
+
+        PotionContentsComponent potionContents = new PotionContentsComponent(
+                Optional.empty(),
+                Optional.of(color.getArgbInt()),
+                food.effects().stream()
+                        .map(FoodComponent.StatusEffectEntry::effect)
+                        .collect(Collectors.toList())
+        );
+        stack.set(DataComponentTypes.POTION_CONTENTS, potionContents);
+
         color.alpha(150);
         stack.set(DataComponentTypes.FOOD, food);
         stack.set(ModDataComponentTypes.POTION_COLOR, color.getArgbInt());
@@ -176,6 +198,10 @@ public class ResultCalculator
         stack.set(ModDataComponentTypes.DILUTED_POTION, diluted);
         stack.set(ModDataComponentTypes.STRONG_POTION, strong);
         stack.set(ModDataComponentTypes.POTION_INGREDIENTS, getIngredientsAsNbtCompound(ingredients));
+
+        if (CraftyConcoctions.DEBUG)
+            CraftyConcoctions.LOGGER.info("Potion created: {} with color {} nbt: {}", stack.toString(), color.toString(), stack.getComponents());
+
         return new ResultCalculatorOutput(stack, color);
     }
 
@@ -230,6 +256,10 @@ public class ResultCalculator
             new Pair<>(new EffectData(new StatusEffectInstance(ModEffects.DWARF, 20 * 180, 1), 1, List.of(Items.BROWN_MUSHROOM, Items.RED_MUSHROOM), new Color(207, 179, 168)),
                     new EffectData(new StatusEffectInstance(ModEffects.GIANT, 20 * 90, 1), 1, List.of(Items.BROWN_MUSHROOM_BLOCK, Items.RED_MUSHROOM_BLOCK), new Color(194, 126, 99)))
     );
+    public static List<Pair<EffectData, EffectData>> getEffectPairs()
+    {
+        return effectPairs;
+    }
 
     public static class ResultCalculatorOutput
     {
@@ -241,9 +271,18 @@ public class ResultCalculator
             this.output = output;
             this.color = color;
         }
+
+        public ItemStack getOutput()
+        {
+            return output;
+        }
+        public Color getColor()
+        {
+            return color;
+        }
     }
 
-    static class EffectData
+    public static class EffectData
     {
         StatusEffectInstance effect;
         int maxAmplifier;
@@ -276,6 +315,23 @@ public class ResultCalculator
             this.maxAmplifier = maxAmplifier;
             this.item = item;
             this.color = color;
+        }
+
+        public StatusEffectInstance getEffect()
+        {
+            return effect;
+        }
+        public int getMaxAmplifier()
+        {
+            return maxAmplifier;
+        }
+        public List<Item> getItems()
+        {
+            return item;
+        }
+        public Color getColor()
+        {
+            return color;
         }
     }
 }

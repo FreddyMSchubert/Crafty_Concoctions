@@ -30,6 +30,9 @@ public class PotionItemMixin
     @Inject(method = "appendTooltip", at = @At("HEAD"), cancellable = true)
     private void injectAppendtooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType type, CallbackInfo ci)
     {
+        if (stack.contains(DataComponentTypes.POTION_CONTENTS) && stack.get(DataComponentTypes.POTION_CONTENTS).hasEffects())
+            stack.get(DataComponentTypes.POTION_CONTENTS).getEffects().forEach((effect) -> tooltip.add(Text.of(effect.toString())));
+
         if (CraftyConcoctions.DEBUG)
         {
             getDebugTooltip(stack, tooltip);
