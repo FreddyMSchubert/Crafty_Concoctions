@@ -11,7 +11,8 @@ public class CraftyConcoctionsClient implements ClientModInitializer
     @Override
     public void onInitializeClient()
     {
-        ModMessagesClient.registerClient();
+        ModMessagesClient.registerS2Creceive();
+        ModMessagesClient.registerC2Ssend();
 
         BlockEntityRendererFactories.register(ModBlockEntities.WITCH_CAULDRON_BE, WitchCauldronBlockEntityRenderer::new);
     }

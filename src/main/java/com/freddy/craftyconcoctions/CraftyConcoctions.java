@@ -28,7 +28,8 @@ public class CraftyConcoctions implements ModInitializer
 		ModItems.register();
 		ModItemGroups.register();
 		ModBlockEntities.register();
-		ModMessages.registerS2C();
+		ModMessages.registerS2Csend();
+		ModMessages.registerC2Sreceive();
 		ModEffects.register();
 		ModDataComponentTypes.register();
 		ModCommands.register();

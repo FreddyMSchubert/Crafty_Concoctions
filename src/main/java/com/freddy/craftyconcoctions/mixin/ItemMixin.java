@@ -29,7 +29,7 @@ public class ItemMixin
     @Unique
     private Text getDefaultName(ItemStack stack)
     {
-        MutableText name = Text.translatable("item.craftyconcoctions.witch_potion");
+        MutableText name = Text.translatable("item.minecraft.potion");
 
         if (stack.contains(ModDataComponentTypes.MUNDANE_POTION) && stack.get(ModDataComponentTypes.MUNDANE_POTION))
             name = Text.translatable("item.craftyconcoctions.potion_type.mundane").append(" ").append(name);
