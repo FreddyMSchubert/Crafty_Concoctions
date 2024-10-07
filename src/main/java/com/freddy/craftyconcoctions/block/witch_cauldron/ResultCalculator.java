@@ -25,6 +25,7 @@ public class ResultCalculator
     {
         Color color;
         PotionType type = PotionType.POTION;
+        int consumeTime;
 
         boolean isGoodPotion;
         boolean isBadPotion;
@@ -55,17 +56,27 @@ public class ResultCalculator
 
         int redstoneCount = 0;
         int glowstoneCount = 0;
+        int lapisLazuliCount = 0;
         for (Item item : modifiers)
         {
             if (item == Items.REDSTONE)
                 redstoneCount++;
             else if (item == Items.GLOWSTONE_DUST)
                 glowstoneCount++;
+            else if (item == ModItems.LAPIS_LAZULI_DUST)
+                lapisLazuliCount++;
             else if (item == Items.GUNPOWDER)
                 type = PotionType.SPLASH_POTION;
             else if (item == Items.DRAGON_BREATH)
                 type = PotionType.LINGERING_POTION;
         }
+
+        // Determine consume time
+
+        consumeTime = ingredients.size() * 11;
+        if (lapisLazuliCount > 0)
+            consumeTime /= lapisLazuliCount + 2;
+        consumeTime = MathUtil.clamp(consumeTime, 8, 64);
 
         // Determine goodness
 
@@ -93,7 +104,7 @@ public class ResultCalculator
             if (goodnessDefiners.isEmpty())
                 isThickPotion = true;
 
-            return getResult(new ArrayList<>(), color, type, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
+            return getResult(new ArrayList<>(), color, consumeTime, type, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
         }
 
         // Determine effects
@@ -155,10 +166,10 @@ public class ResultCalculator
         }
         color = Color.blendColors(colors);
 
-        return getResult(effects, color, type, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
+        return getResult(effects, color, consumeTime, type, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
     }
 
-    public static ResultCalculatorOutput getResult(List<StatusEffectInstance> effects, Color color, PotionType type, List<Item> ingredients, boolean good, boolean bad, boolean mundane, boolean awkward, boolean thick, boolean diluted, boolean strong)
+    public static ResultCalculatorOutput getResult(List<StatusEffectInstance> effects, Color color, int consumeTime, PotionType type, List<Item> ingredients, boolean good, boolean bad, boolean mundane, boolean awkward, boolean thick, boolean diluted, boolean strong)
     {
         ItemStack stack = new ItemStack(Items.POTION);
         if (type == PotionType.SPLASH_POTION)
@@ -168,6 +179,7 @@ public class ResultCalculator
 
         stack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(Optional.empty(), Optional.of(color.getArgbInt()), effects));
         stack.set(ModDataComponentTypes.POTION_COLOR, color.getArgbInt());
+        stack.set(ModDataComponentTypes.POTION_CONSUME_TIME, consumeTime);
         stack.set(ModDataComponentTypes.GOOD_POTION, good);
         stack.set(ModDataComponentTypes.BAD_POTION, bad);
         stack.set(ModDataComponentTypes.MUNDANE_POTION, mundane);

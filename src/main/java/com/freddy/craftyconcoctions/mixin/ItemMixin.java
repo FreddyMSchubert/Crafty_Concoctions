@@ -1,10 +1,12 @@
 package com.freddy.craftyconcoctions.mixin;
 
+import com.freddy.craftyconcoctions.item.ModItemTags;
 import com.freddy.craftyconcoctions.util.ModDataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Rarity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,6 +21,9 @@ public class ItemMixin
     {
         if (stack.contains(ModDataComponentTypes.POTION_COLOR)) // => mod potion
             cir.setReturnValue(getDefaultName(stack));
+
+        if (stack.getItem().getDefaultStack().isIn(ModItemTags.POTION_DEFINERS) && stack.getRarity() == Rarity.COMMON) // dont overwrite rarity info
+            cir.setReturnValue(Text.translatable(stack.getTranslationKey()).withColor(13022207));
     }
 
     @Unique

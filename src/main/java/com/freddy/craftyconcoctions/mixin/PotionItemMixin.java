@@ -5,6 +5,7 @@ import com.freddy.craftyconcoctions.block.witch_cauldron.WitchCauldronSettings;
 import com.freddy.craftyconcoctions.util.ModDataComponentTypes;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.FoodComponent;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,6 +20,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -72,4 +74,12 @@ public class PotionItemMixin
         for (Map.Entry<Item, Integer> entry : items.entrySet())
             tooltipOutput.add(Text.of(entry.getValue() + "x " + entry.getKey().getName().getString()));
     }
+
+    @Inject(method = "getMaxUseTime", at = @At("HEAD"), cancellable = true)
+    private void injectGetMaxUseTime(ItemStack stack, LivingEntity user, CallbackInfoReturnable<Integer> cir)
+    {
+        if (stack.contains(ModDataComponentTypes.POTION_CONSUME_TIME))
+            cir.setReturnValue(stack.get(ModDataComponentTypes.POTION_CONSUME_TIME));
+    }
+
 }

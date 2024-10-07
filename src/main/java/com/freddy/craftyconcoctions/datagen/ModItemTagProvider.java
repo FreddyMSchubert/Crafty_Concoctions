@@ -2,6 +2,7 @@ package com.freddy.craftyconcoctions.datagen;
 
 import com.freddy.craftyconcoctions.block.witch_cauldron.ResultCalculator;
 import com.freddy.craftyconcoctions.item.ModItemTags;
+import com.freddy.craftyconcoctions.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.item.Item;
@@ -36,6 +37,7 @@ public class ModItemTagProvider extends FabricTagProvider.ItemTagProvider
         getOrCreateTagBuilder(ModItemTags.MODIFIERS)
                 .add(Items.REDSTONE)
                 .add(Items.GLOWSTONE_DUST)
+                .add(ModItems.LAPIS_LAZULI_DUST)
                 .add(Items.DRAGON_BREATH)
                 .add(Items.GUNPOWDER);
     }

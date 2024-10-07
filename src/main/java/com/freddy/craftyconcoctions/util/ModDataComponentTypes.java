@@ -13,6 +13,7 @@ public class ModDataComponentTypes
 {
     public static final ComponentType<Integer> POTION_COLOR = ComponentType.<Integer>builder().codec(Codec.INT).packetCodec(PacketCodecs.INTEGER).build();
     public static final ComponentType<NbtCompound> POTION_INGREDIENTS = ComponentType.<NbtCompound>builder().codec(NbtCompound.CODEC).packetCodec(PacketCodecs.UNLIMITED_NBT_COMPOUND).build();
+    public static final ComponentType<Integer> POTION_CONSUME_TIME = ComponentType.<Integer>builder().codec(Codec.INT).packetCodec(PacketCodecs.INTEGER).build();
 
     public static final ComponentType<Boolean> GOOD_POTION = ComponentType.<Boolean>builder().codec(Codec.BOOL).packetCodec(PacketCodecs.BOOL).build();
     public static final ComponentType<Boolean> BAD_POTION = ComponentType.<Boolean>builder().codec(Codec.BOOL).packetCodec(PacketCodecs.BOOL).build();
@@ -28,6 +29,7 @@ public class ModDataComponentTypes
     {
         Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(CraftyConcoctions.MOD_ID, "potion_color"), POTION_COLOR);
         Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(CraftyConcoctions.MOD_ID, "potion_ingredients"), POTION_INGREDIENTS);
+        Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(CraftyConcoctions.MOD_ID, "potion_consume_time"), POTION_CONSUME_TIME);
 
         Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(CraftyConcoctions.MOD_ID, "good_potion"), GOOD_POTION);
         Registry.register(Registries.DATA_COMPONENT_TYPE, Identifier.of(CraftyConcoctions.MOD_ID, "bad_potion"), BAD_POTION);
