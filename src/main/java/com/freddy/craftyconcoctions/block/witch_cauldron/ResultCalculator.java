@@ -16,9 +16,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagKey;
 import oshi.util.tuples.Pair;
 
 import java.util.*;
@@ -116,13 +113,13 @@ public class ResultCalculator
                 Color effectColor;
                 int maxAmplifier;
 
-                if (isGoodPotion && pair.getA().item.contains(potionDefiner) || isBadPotion && pair.getB().item.contains(potionDefiner))
+                if (isGoodPotion && pair.getA().items.contains(potionDefiner) || isBadPotion && pair.getB().items.contains(potionDefiner))
                 {
                     effect = pair.getA().effect;
                     effectColor = pair.getA().color;
                     maxAmplifier = pair.getA().maxAmplifier;
                 }
-                else if (isGoodPotion && pair.getB().item.contains(potionDefiner) || isBadPotion && pair.getA().item.contains(potionDefiner))
+                else if (isGoodPotion && pair.getB().items.contains(potionDefiner) || isBadPotion && pair.getA().items.contains(potionDefiner))
                 {
                     effect = pair.getB().effect;
                     effectColor = pair.getB().color;
@@ -200,7 +197,7 @@ public class ResultCalculator
         stack.set(ModDataComponentTypes.POTION_INGREDIENTS, getIngredientsAsNbtCompound(ingredients));
 
         if (CraftyConcoctions.DEBUG)
-            CraftyConcoctions.LOGGER.info("Potion created: {} with color {} nbt: {}", stack.toString(), color.toString(), stack.getComponents());
+            CraftyConcoctions.LOGGER.info("Potion created: {} with color {} nbt: {}", stack, color, stack.getComponents());
 
         return new ResultCalculatorOutput(stack, color);
     }
@@ -229,7 +226,7 @@ public class ResultCalculator
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 20 * 180, 1), 1, Items.MAGMA_CREAM, new Color(255, 153, 0)),
                     new EffectData(new StatusEffectInstance(ModEffects.FIRE_WEAKNESS, 20 * 90, 1), 2, Items.PAPER, new Color(153, 92, 0))),
 
-            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.WATER_BREATHING, 20 * 90, 1), 1, ItemTags.FISHES, new Color(152, 218, 192)),
+            new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.WATER_BREATHING, 20 * 90, 1), 1, List.of(Items.COD, Items.COOKED_COD, Items.COD_BUCKET, Items.SALMON, Items.COOKED_SALMON, Items.SALMON_BUCKET, Items.PUFFERFISH, Items.PUFFERFISH_BUCKET, Items.TROPICAL_FISH, Items.TROPICAL_FISH_BUCKET), new Color(152, 218, 192)),
                     new EffectData(new StatusEffectInstance(ModEffects.BREATHLESSNESS, 20 * 45, 1), 1, Items.ENDER_PEARL, new Color(77, 191, 146))),
 
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.INVISIBILITY, 20 * 180, 1), 1, Items.AMETHYST_SHARD, new Color(246, 246, 246)),
@@ -286,26 +283,15 @@ public class ResultCalculator
     {
         StatusEffectInstance effect;
         int maxAmplifier;
-        List<Item> item;
+        List<Item> items;
         Color color;
 
         EffectData(StatusEffectInstance effect, int maxAmplifier, Item item, Color color)
         {
             this.effect = effect;
             this.maxAmplifier = maxAmplifier;
-            this.item = new ArrayList<>();
-            this.item.add(item);
-            this.color = color;
-        }
-
-        EffectData(StatusEffectInstance effect, int maxAmplifier, TagKey<Item> tag, Color color)
-        {
-            this.effect = effect;
-            this.maxAmplifier = maxAmplifier;
-            this.item = new ArrayList<>();
-            for (Item item : Registries.ITEM.stream().toList())
-                if (item.getDefaultStack().isIn(tag))
-                    this.item.add(item);
+            this.items = new ArrayList<>();
+            this.items.add(item);
             this.color = color;
         }
 
@@ -313,7 +299,7 @@ public class ResultCalculator
         {
             this.effect = effect;
             this.maxAmplifier = maxAmplifier;
-            this.item = item;
+            this.items = item;
             this.color = color;
         }
 
@@ -327,7 +313,7 @@ public class ResultCalculator
         }
         public List<Item> getItems()
         {
-            return item;
+            return items;
         }
         public Color getColor()
         {
