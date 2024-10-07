@@ -8,7 +8,6 @@ import com.freddy.craftyconcoctions.util.Color;
 import com.freddy.craftyconcoctions.util.MathUtil;
 import com.freddy.craftyconcoctions.util.ModDataComponentTypes;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -19,13 +18,11 @@ import net.minecraft.nbt.NbtCompound;
 import oshi.util.tuples.Pair;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ResultCalculator
 {
     public static ResultCalculatorOutput getResult(List<Item> ingredients)
     {
-        FoodComponent food = new FoodComponent(0, 0f, true, 2f, Optional.ofNullable(Items.GLASS_BOTTLE.getDefaultStack()), new ArrayList<>());
         Color color;
         PotionType type = PotionType.POTION;
 
@@ -90,14 +87,13 @@ public class ResultCalculator
         {
             // Mundane, thick, or awkward potion
             color = WitchCauldronSettings.WATER_COLOR.copy();
-            food = new FoodComponent(0, 0f, true, 2f, Optional.ofNullable(Items.GLASS_BOTTLE.getDefaultStack()), new ArrayList<>());
 
             if (potionDefiners.isEmpty())
                 isAwkwardPotion = true;
             if (goodnessDefiners.isEmpty())
                 isThickPotion = true;
 
-            return getResult(food, color, type, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
+            return getResult(new ArrayList<>(), color, type, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
         }
 
         // Determine effects
@@ -157,17 +153,12 @@ public class ResultCalculator
                 colors.add(newColor);
             }
         }
-
-        // return merged effects & colors
-
-        for (StatusEffectInstance instance : effects)
-            food.effects().add(new FoodComponent.StatusEffectEntry(instance, 1f));
         color = Color.blendColors(colors);
 
-        return getResult(food, color, type, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
+        return getResult(effects, color, type, ingredients, isGoodPotion, isBadPotion, isMundanePotion, isAwkwardPotion, isThickPotion, isDilutedPotion, isStrongPotion);
     }
 
-    public static ResultCalculatorOutput getResult(FoodComponent food, Color color, PotionType type, List<Item> ingredients, boolean good, boolean bad, boolean mundane, boolean awkward, boolean thick, boolean diluted, boolean strong)
+    public static ResultCalculatorOutput getResult(List<StatusEffectInstance> effects, Color color, PotionType type, List<Item> ingredients, boolean good, boolean bad, boolean mundane, boolean awkward, boolean thick, boolean diluted, boolean strong)
     {
         ItemStack stack = new ItemStack(Items.POTION);
         if (type == PotionType.SPLASH_POTION)
@@ -175,17 +166,7 @@ public class ResultCalculator
         else if (type == PotionType.LINGERING_POTION)
             stack = new ItemStack(Items.LINGERING_POTION);
 
-        PotionContentsComponent potionContents = new PotionContentsComponent(
-                Optional.empty(),
-                Optional.of(color.getArgbInt()),
-                food.effects().stream()
-                        .map(FoodComponent.StatusEffectEntry::effect)
-                        .collect(Collectors.toList())
-        );
-        stack.set(DataComponentTypes.POTION_CONTENTS, potionContents);
-
-        color.alpha(150);
-        stack.set(DataComponentTypes.FOOD, food);
+        stack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(Optional.empty(), Optional.of(color.getArgbInt()), effects));
         stack.set(ModDataComponentTypes.POTION_COLOR, color.getArgbInt());
         stack.set(ModDataComponentTypes.GOOD_POTION, good);
         stack.set(ModDataComponentTypes.BAD_POTION, bad);
@@ -218,7 +199,7 @@ public class ResultCalculator
                     new EffectData(new StatusEffectInstance(StatusEffects.WEAKNESS, 20 * 90, 1), 1, Items.AIR, new Color(72, 77, 72))),
 
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 20 * 180, 1), 4, Items.RABBIT_FOOT, new Color(253, 255, 132)),
-                    new EffectData(new StatusEffectInstance(ModEffects.JUMP_REDUCTION, 20 * 90, 1), 2, Items.AIR, new Color(251, 30, 255))),
+                    new EffectData(new StatusEffectInstance(ModEffects.JUMP_REDUCTION, 20 * 90, 1), 2, Items.BARRIER, new Color(251, 30, 255))),
 
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.REGENERATION, 20 * 45, 1), 2, Items.GHAST_TEAR, new Color(205, 92, 171)),
                     new EffectData(new StatusEffectInstance(StatusEffects.POISON, 20 * 45, 1), 2, List.of(Items.PUFFERFISH, Items.POISONOUS_POTATO), new Color(135, 163, 99))),

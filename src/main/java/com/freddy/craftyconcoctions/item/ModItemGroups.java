@@ -58,12 +58,12 @@ public class ModItemGroups
     {
         entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART)).getOutput());
         entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART, Items.REDSTONE)).getOutput());
-        entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART, Items.GLOWSTONE)).getOutput());
-        entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART, Items.GLOWSTONE, Items.REDSTONE)).getOutput());
+        entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART, Items.GLOWSTONE_DUST)).getOutput());
+        entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART, Items.GLOWSTONE_DUST, Items.REDSTONE)).getOutput());
         entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART, Items.GUNPOWDER)).getOutput());
-        entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART, Items.GUNPOWDER, Items.GLOWSTONE, Items.REDSTONE)).getOutput());
+        entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART, Items.GUNPOWDER, Items.GLOWSTONE_DUST, Items.REDSTONE)).getOutput());
         entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART, Items.DRAGON_BREATH)).getOutput());
-        entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART, Items.DRAGON_BREATH, Items.GLOWSTONE, Items.REDSTONE)).getOutput());
+        entries.add(ResultCalculator.getResult(List.of(potionItem, Items.NETHER_WART, Items.DRAGON_BREATH, Items.GLOWSTONE_DUST, Items.REDSTONE)).getOutput());
         entries.add(createEmptyStack(differentiationInt++));
         return differentiationInt;
     }

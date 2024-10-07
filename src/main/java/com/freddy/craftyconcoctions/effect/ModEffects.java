@@ -26,7 +26,7 @@ public class ModEffects
     // new
     public static final RegistryEntry<StatusEffect> GIANT = register("giant", new ModStatusEffect(StatusEffectCategory.HARMFUL, 0x00FF00)
                     .addAttributeModifier(EntityAttributes.GENERIC_SCALE, Identifier.of(CraftyConcoctions.MOD_ID, "effect.giant"), 1.0, EntityAttributeModifier.Operation.ADD_VALUE)
-                    .addAttributeModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, Identifier.of(CraftyConcoctions.MOD_ID, "effect.giant.movement_speed"), -0.2, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+                    .addAttributeModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, Identifier.of(CraftyConcoctions.MOD_ID, "effect.giant.movement_speed"), -0.15, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 
     public static final RegistryEntry<StatusEffect> DWARF = register("dwarf", new ModStatusEffect(StatusEffectCategory.BENEFICIAL, 0x00FF00)
                     .addAttributeModifier(EntityAttributes.GENERIC_SCALE, Identifier.of(CraftyConcoctions.MOD_ID, "effect.dwarf"), -0.5, EntityAttributeModifier.Operation.ADD_VALUE)
