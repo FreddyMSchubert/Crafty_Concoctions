@@ -11,7 +11,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.mob.BlazeEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -328,20 +327,13 @@ public class WitchCauldronBlockEntity extends BlockEntity
 
     private int getHeatLevel(BlockPos pos, World world)
     {
-        // Level 3
-        Box areaToCheck = new Box(pos.getX() - 3, pos.getY() - 3, pos.getZ() - 3, pos.getX() + 4, pos.getY() + 4, pos.getZ() + 4);
-        if (!world.getEntitiesByClass(BlazeEntity.class, areaToCheck, entity -> true).isEmpty())
-            return 3;
-
-        // Level 2
         BlockState belowBlock = world.getBlockState(pos.down());
+        if (belowBlock.isIn(ModBlockTags.HEATING_BLOCKS_LVL_3))
+            return 3;
         if (belowBlock.isIn(ModBlockTags.HEATING_BLOCKS_LVL_2))
             return 2;
-
-        // Level 1
         if (belowBlock.isIn(ModBlockTags.HEATING_BLOCKS_LVL_1))
             return 1;
-
         return 0;
     }
 
