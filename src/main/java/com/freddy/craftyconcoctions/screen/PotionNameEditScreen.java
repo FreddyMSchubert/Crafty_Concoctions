@@ -26,7 +26,9 @@ public class PotionNameEditScreen extends Screen
         this.nameField = new TextFieldWidget(this.textRenderer, x, y, 200, 20, Text.of("Potion Name"));
         this.nameField.setMaxLength(32);
         this.addSelectableChild(this.nameField);
+        this.setFocused(true);
         this.setFocused(this.nameField);
+        applyBlur(0);
     }
 
     @Override
@@ -43,8 +45,16 @@ public class PotionNameEditScreen extends Screen
         if ((keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_ESCAPE) && this.nameField.isFocused())
         {
             C2SPotionNameEditPayload.send(this.nameField.getText());
+            this.close();
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    // required to make the screen non-blurry
+    @Override
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta)
+    {
+        return;
     }
 }

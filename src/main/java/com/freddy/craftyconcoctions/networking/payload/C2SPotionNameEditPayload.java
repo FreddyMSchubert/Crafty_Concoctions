@@ -19,7 +19,7 @@ public record C2SPotionNameEditPayload(String name) implements CustomPayload
     @Override
     public Id<? extends CustomPayload> getId()
     {
-        return null;
+        return ID;
     }
 
     public static void send(String name)
