@@ -258,8 +258,8 @@ public class WitchCauldronBlockEntity extends BlockEntity
                 {
                     if (!ingredients.isEmpty())
                     {
-                        ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), ingredients.getFirst().getDefaultStack());
-                        ingredients.removeFirst();
+                        ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), ingredients.getLast().getDefaultStack());
+                        ingredients.removeLast();
                         markDirty();
                         interactionOccurred = true;
                     }
