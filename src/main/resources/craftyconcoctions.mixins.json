@@ -3,6 +3,7 @@
   "package": "com.freddy.craftyconcoctions.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BlocksMixin",
     "ItemMixin",
     "ItemStackMixin",
     "PotionItemMixin"
