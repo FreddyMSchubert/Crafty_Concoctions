@@ -9,7 +9,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
@@ -30,7 +29,6 @@ public class WitchCauldronBlock extends BlockWithEntity
     public static final MapCodec<WitchCauldronBlock> CODEC = WitchCauldronBlock.createCodec(WitchCauldronBlock::new);
 
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
-    public static final BooleanProperty LIT = Properties.LIT;
 
     public WitchCauldronBlock(Settings settings)
     { super(settings); }
@@ -57,13 +55,13 @@ public class WitchCauldronBlock extends BlockWithEntity
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx)
     {
-        return this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite()).with(LIT, false);
+        return this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder)
     {
-        builder.add(FACING, LIT);
+        builder.add(FACING);
     }
 
     @Nullable
