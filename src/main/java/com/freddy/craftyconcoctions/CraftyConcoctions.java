@@ -17,7 +17,7 @@ public class CraftyConcoctions implements ModInitializer
 {
 	public static final String MOD_ID = "craftyconcoctions";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	public static final Boolean DEBUG = true;
+	public static final Boolean DEBUG = false;
 
 	@Override
 	public void onInitialize()

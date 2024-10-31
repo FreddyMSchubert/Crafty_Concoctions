@@ -114,6 +114,8 @@ public class ResultCalculator
 
         for (Item potionDefiner : potionDefiners)
         {
+            CraftyConcoctions.LOGGER.info("Potion definer: {}", potionDefiner);
+
             for (Pair<EffectData, EffectData> pair : effectPairs)
             {
                 StatusEffectInstance effect;
@@ -208,10 +210,10 @@ public class ResultCalculator
                     new EffectData(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * 90, 1), 4, Items.TURTLE_SCUTE, new Color(139, 175, 224))),
 
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.STRENGTH, 20 * 180, 1), 2, Items.BLAZE_POWDER, new Color(255, 199, 9)),
-                    new EffectData(new StatusEffectInstance(StatusEffects.WEAKNESS, 20 * 90, 1), 1, Items.AIR, new Color(72, 77, 72))),
+                    new EffectData(new StatusEffectInstance(StatusEffects.WEAKNESS, 20 * 90, 1), 1, Items.BOWL, new Color(72, 77, 72))),
 
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 20 * 180, 1), 4, Items.RABBIT_FOOT, new Color(253, 255, 132)),
-                    new EffectData(new StatusEffectInstance(ModEffects.JUMP_REDUCTION, 20 * 90, 1), 2, Items.BARRIER, new Color(251, 30, 255))),
+                    new EffectData(new StatusEffectInstance(ModEffects.JUMP_REDUCTION, 20 * 90, 1), 2, Items.SOUL_SAND, new Color(251, 30, 255))),
 
             new Pair<>(new EffectData(new StatusEffectInstance(StatusEffects.REGENERATION, 20 * 45, 1), 2, Items.GHAST_TEAR, new Color(205, 92, 171)),
                     new EffectData(new StatusEffectInstance(StatusEffects.POISON, 20 * 45, 1), 2, List.of(Items.PUFFERFISH, Items.POISONOUS_POTATO), new Color(135, 163, 99))),

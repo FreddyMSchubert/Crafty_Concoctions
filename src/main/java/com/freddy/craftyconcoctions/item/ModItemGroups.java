@@ -30,14 +30,24 @@ public class ModItemGroups
                             int differentiationInt = 0;
 
                             entries.add(new ItemStack(ModBlocks.WITCH_CAULDRON));
-                            entries.add(new ItemStack(ModItems.CLOVER_LEAVES_2));
                             entries.add(new ItemStack(ModItems.CLOVER_LEAVES_3));
-                            entries.add(new ItemStack(ModItems.CLOVER_LEAVES_4));
+                            entries.add(new ItemStack(ModItems.LAPIS_LAZULI_DUST));
 
-                            for (int i = 0; i < 5 + 9; i++)
+                            for (int i = 0; i < 6 + 9; i++)
                                 entries.add(createEmptyStack(differentiationInt++));
 
                             List<Pair<ResultCalculator.EffectData, ResultCalculator.EffectData>> pairs = ResultCalculator.getEffectPairs();
+                            int ingredientsAdded = 0;
+                            for (Pair<ResultCalculator.EffectData, ResultCalculator.EffectData> pair : pairs)
+                            {
+                                entries.add(pair.getA().getItems().getFirst().getDefaultStack());
+                                entries.add(pair.getB().getItems().getFirst().getDefaultStack());
+                                ingredientsAdded += 2;
+                            }
+
+                            for (int i = 0; i < ( 9 - ingredientsAdded % 9) + 9; i++)
+                                entries.add(createEmptyStack(differentiationInt++));
+
                             for (Pair<ResultCalculator.EffectData, ResultCalculator.EffectData> pair : pairs)
                             {
                                 differentiationInt = addEntriesForPotionIngredient(pair.getA().getItems().getFirst(), entries, differentiationInt);
